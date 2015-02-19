@@ -1,14 +1,11 @@
-package gr.iti.mklab.sfc.streams.impl;
+package gr.iti.mklab.manager.streams.impl;
 
 import org.apache.log4j.Logger;
 
 import gr.iti.mklab.framework.Credentials;
-import gr.iti.mklab.framework.common.domain.Source;
-import gr.iti.mklab.framework.retrievers.RateLimitsMonitor;
 import gr.iti.mklab.framework.retrievers.impl.TwitterRetriever;
-import gr.iti.mklab.sfc.streams.Stream;
-import gr.iti.mklab.sfc.streams.StreamConfiguration;
-import gr.iti.mklab.sfc.streams.StreamException;
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.manager.streams.Stream;
 
 /**
  * Class responsible for setting up the connection to Twitter API
@@ -19,12 +16,12 @@ import gr.iti.mklab.sfc.streams.StreamException;
  */
 public class TwitterStream extends Stream {
 	
-	public static Source SOURCE = Source.Twitter;
+	public static String SOURCE = "Twitter";
 	
 	private Logger  logger = Logger.getLogger(TwitterStream.class);
 
 	@Override
-	public synchronized void open(StreamConfiguration config) throws StreamException {
+	public synchronized void open(Configuration config) throws Exception {
 
 		logger.info("#Twitter : Open stream");
 		
@@ -41,7 +38,7 @@ public class TwitterStream extends Stream {
 		if (oAuthConsumerKey == null || oAuthConsumerSecret == null ||
 				oAuthAccessToken == null || oAuthAccessTokenSecret == null) {
 			logger.error("#Twitter : Stream requires authentication");
-			throw new StreamException("Stream requires authentication");
+			throw new Exception("Stream requires authentication");
 		}
 		
 		logger.info("Twitter Credentials: \n" + 
@@ -61,9 +58,9 @@ public class TwitterStream extends Stream {
 		credentials.setAccessToken(oAuthAccessToken);
 		credentials.setAccessTokenSecret(oAuthAccessTokenSecret);
 		
-		RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxRequests), Long.parseLong(maxRunningTime));
+		//RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxRequests), Long.parseLong(maxRunningTime));
 		
-		retriever = new TwitterRetriever(credentials, rateLimitsMonitor);	
+		retriever = new TwitterRetriever(credentials);	
 	}
 	
 	@Override

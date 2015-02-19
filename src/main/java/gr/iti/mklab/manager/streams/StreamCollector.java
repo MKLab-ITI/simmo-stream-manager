@@ -1,4 +1,7 @@
-package gr.iti.mklab.sfc.streams;
+package gr.iti.mklab.manager.streams;
+
+import gr.iti.mklab.manager.config.StreamManagerConfiguration;
+import gr.iti.mklab.manager.streams.management.StreamsManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
-import gr.iti.mklab.sfc.input.InputConfiguration;
-import gr.iti.mklab.sfc.streams.management.StreamsManager;
 
 /**
  * Main class for the execution of StreamManager
@@ -27,22 +28,19 @@ public class StreamCollector {
 		
 		Logger logger = Logger.getLogger(StreamCollector.class);
 		
-		File streamConfigFile, inputConfigFile;
+		File streamConfigFile;
 		if(args.length != 2 ) {
 			streamConfigFile = new File("./conf/streams.conf.xml");
-			inputConfigFile = new File("./conf/input.conf.xml");
 		}
 		else {
 			streamConfigFile = new File(args[0]);
-			inputConfigFile = new File(args[1]);
 		}
 		
 		StreamsManager manager = null;
 		try {
-			StreamsManagerConfiguration config = StreamsManagerConfiguration.readFromFile(streamConfigFile);		
-			InputConfiguration inputConfig = InputConfiguration.readFromFile(inputConfigFile);		
+			StreamManagerConfiguration config = StreamManagerConfiguration.readFromFile(streamConfigFile);		
 	        
-			manager = new StreamsManager(config, inputConfig);
+			manager = new StreamsManager(config);
 			manager.open();
 			
 			Runtime.getRuntime().addShutdownHook(new Shutdown(manager));
@@ -54,8 +52,6 @@ public class StreamCollector {
 		} catch (SAXException e) {
 			logger.error(e.getMessage());
 		} catch (IOException e) {
-			logger.error(e.getMessage());
-		} catch (StreamException e) {
 			logger.error(e.getMessage());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -96,7 +92,7 @@ public class StreamCollector {
 			if (_manager != null) {
 				try {
 					_manager.close();
-				} catch (StreamException e) {
+				} catch (Exception e) {
 					_logger.error(e);
 					e.printStackTrace();
 				}

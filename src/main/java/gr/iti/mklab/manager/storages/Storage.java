@@ -1,6 +1,7 @@
-package gr.iti.mklab.sfc.storages;
+package gr.iti.mklab.manager.storages;
 
-import gr.iti.mklab.framework.common.domain.Item;
+
+import gr.iti.mklab.simmo.documents.Post;
 
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ public interface Storage {
 	 * 			Stream update to store
 	 * @throws IOException
 	 */
-	public void store(Item update) throws IOException;
+	public void store(Post post) throws IOException;
 	
 	
 	/**
@@ -32,7 +33,7 @@ public interface Storage {
 	 * 			Stream update to store
 	 * @throws IOException
 	 */
-	public void update(Item update) throws IOException;
+	public void update(Post post) throws IOException;
 	
 	/**
 	 * Delete a single stream update within store based on its id
@@ -45,11 +46,6 @@ public interface Storage {
 	public boolean delete(String id) throws IOException;
 	
 	public boolean checkStatus();
-	
-	/**
-	 * Update timeslot
-	 */
-	public void updateTimeslot();
 	
 	/**
 	 * Close the store

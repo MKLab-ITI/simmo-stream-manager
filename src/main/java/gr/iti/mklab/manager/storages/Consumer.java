@@ -1,15 +1,15 @@
-package gr.iti.mklab.sfc.storages;
+package gr.iti.mklab.manager.storages;
+
+import gr.iti.mklab.simmo.documents.Post;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import org.apache.log4j.Logger;
 
-import gr.iti.mklab.framework.common.domain.Item;
-
 /**
  * Class for storing items to databases
- * 
  * 
  * @author manosetro
  * @email  manosetro@iti.gr
@@ -23,12 +23,12 @@ public class Consumer extends Thread {
 	private Logger _logger = Logger.getLogger(Consumer.class);
 	
 	private boolean isAlive = true;
-	private Storage store = null;
+	private List<Storage> storages = null;
 	
-	private BlockingQueue<Item> queue;
+	private BlockingQueue<Post> queue;
 	
-	public Consumer(BlockingQueue<Item> queue, Storage store) {
-		this.store = store;
+	public Consumer(BlockingQueue<Post> queue, List<Storage> storages) {
+		this.storages = storages;
 		this.queue = queue;
 	}
 	
@@ -36,7 +36,7 @@ public class Consumer extends Thread {
 	 * Stores an item if the latter is found waiting in the queue
 	 */
 	public void run() {			
-		Item item = null;
+		Post item = null;
 		while (isAlive) {
 			try {
 				item = take();
@@ -68,13 +68,11 @@ public class Consumer extends Thread {
 	 * @param item
 	 * @throws IOException
 	 */
-	private void process(Item item) throws IOException {
-		if (store != null) {
-			
-			store.store(item);
-			//store.update(item);
-			//store.delete(item.getId());
-
+	private void process(Post post) throws IOException {
+		for(Storage storage : storages) {
+			if (storage != null) {			
+				storage.store(post);
+			}
 		}
 	}
 	
@@ -82,7 +80,7 @@ public class Consumer extends Thread {
 	 * Polls an item from the queue
 	 * @return
 	 */
-	private Item poll() {			
+	private Post poll() {			
 		return queue.poll();		
 	}
 	
@@ -90,14 +88,14 @@ public class Consumer extends Thread {
 	 * Polls an item from the queue. Waits if the queue is empty. 
 	 * @return
 	 */
-	private Item take() {				
-		Item item = null;
+	private Post take() {				
+		Post post = null;
 		try {
-			item = queue.take();
+			post = queue.take();
 		} catch (InterruptedException e) {
 			_logger.error(e);
 		}	
-		return item;
+		return post;
 	}
 	
 	/**

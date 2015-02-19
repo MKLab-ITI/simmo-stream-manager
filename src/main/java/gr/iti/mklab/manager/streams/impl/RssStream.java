@@ -1,27 +1,27 @@
-package gr.iti.mklab.sfc.streams.impl;
+package gr.iti.mklab.manager.streams.impl;
 
-import gr.iti.mklab.framework.common.domain.Source;
 import gr.iti.mklab.framework.retrievers.impl.RssRetriever;
-import gr.iti.mklab.sfc.streams.Stream;
-import gr.iti.mklab.sfc.streams.StreamConfiguration;
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.manager.streams.Stream;
 
 /**
  * Class responsible for setting up the connection for retrieving RSS feeds.
- * @author ailiakop
- * @email  ailiakop@iti.gr
+ * 
+ * @author manosetro
+ * @email  manosetro@iti.gr
  */
 public class RssStream extends Stream {
 	
-	public static Source SOURCE = Source.RSS;
+	public static String SOURCE = "RSS";
 	
 	@Override
-	public void open(StreamConfiguration config) {
+	public void open(Configuration config) {
 		retriever = new RssRetriever();
 	}
 
 	@Override
 	public String getName() {
-		return "RSS";
+		return SOURCE;
 	}
 
 }

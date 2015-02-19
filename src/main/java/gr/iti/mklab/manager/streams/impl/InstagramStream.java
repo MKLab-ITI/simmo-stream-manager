@@ -1,31 +1,29 @@
-package gr.iti.mklab.sfc.streams.impl;
+package gr.iti.mklab.manager.streams.impl;
 
 import org.apache.log4j.Logger;
 
 import gr.iti.mklab.framework.Credentials;
-import gr.iti.mklab.framework.common.domain.Source;
-import gr.iti.mklab.framework.retrievers.RateLimitsMonitor;
 import gr.iti.mklab.framework.retrievers.impl.InstagramRetriever;
-import gr.iti.mklab.sfc.streams.Stream;
-import gr.iti.mklab.sfc.streams.StreamConfiguration;
-import gr.iti.mklab.sfc.streams.StreamException;
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.manager.streams.Stream;
 
 /**
  * Class responsible for setting up the connection to Instagram API
  * for retrieving relevant Instagram content.
- * @author ailiakop
- * @email  ailiakop@iti.gr
+ * 
+ * @author manosetro
+ * @email  manosetro@iti.gr
  */
 
 public class InstagramStream extends Stream {
 	
 	private Logger logger = Logger.getLogger(InstagramStream.class);
 	
-	public static final Source SOURCE = Source.Instagram;
+	public static final String SOURCE = "Instagram";
 
 
 	@Override
-	public void open(StreamConfiguration config) throws StreamException {
+	public void open(Configuration config) throws Exception {
 		logger.info("#Instagram : Open stream");
 		
 		if (config == null) {
@@ -43,7 +41,7 @@ public class InstagramStream extends Stream {
 		
 		if (key == null || secret == null || token == null) {
 			logger.error("#Instagram : Stream requires authentication.");
-			throw new StreamException("Stream requires authentication.");
+			throw new Exception("Stream requires authentication.");
 		}
 		
 		Credentials credentials = new Credentials();
@@ -51,9 +49,9 @@ public class InstagramStream extends Stream {
 		credentials.setSecret(secret);
 		credentials.setAccessToken(token);
 		
-		RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxRequests), Long.parseLong(maxRunningTime));
+		//RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxRequests), Long.parseLong(maxRunningTime));
 		
-		retriever = new InstagramRetriever(credentials, rateLimitsMonitor);
+		retriever = new InstagramRetriever(credentials);
 	
 	}
 

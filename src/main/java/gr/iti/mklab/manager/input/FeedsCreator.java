@@ -2,6 +2,7 @@ package gr.iti.mklab.manager.input;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,10 @@ import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 
 import com.mongodb.MongoClient;
+
+import gr.iti.mklab.framework.feeds.AccountFeed;
 import gr.iti.mklab.framework.feeds.Feed;
+import gr.iti.mklab.framework.feeds.KeywordsFeed;
 import gr.iti.mklab.manager.config.Configuration;
 
 /**
@@ -49,6 +53,10 @@ public class FeedsCreator {
 		return feedsPerSource;
 	}
 	
+	public void save(Feed feed) {
+		feedsDAO.save(feed);
+	}
+	
 	public List<Feed> createFeeds() {
 
 		Query<Feed> query = feedsDAO.createQuery();
@@ -58,5 +66,26 @@ public class FeedsCreator {
 		
 		return feeds;
 	}
-	
+
+	public static void main(String...args) throws UnknownHostException {
+		
+		Configuration conf = new Configuration();
+		conf.setParameter("hostname", "160.40.50.207");
+		conf.setParameter("database", "SM2_test");
+		
+		FeedsCreator feedsCreator = new FeedsCreator(conf);
+		
+		Date since = new Date(System.currentTimeMillis()-9600000);
+		Feed feed1 = new AccountFeed("398789134", "ShabuQureshi", since);
+		Feed feed2 = new KeywordsFeed("1", "obama", since);
+		
+		feedsCreator.save(feed1);
+		feedsCreator.save(feed2);
+		
+		List<Feed> feeds = feedsCreator.createFeeds();
+		System.out.println(feeds.size() + " feeds found!");
+		for(Feed feed : feeds) {
+			System.out.println(feed.getClass());
+		}
+	}
 }

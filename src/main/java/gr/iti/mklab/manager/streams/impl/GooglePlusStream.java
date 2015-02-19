@@ -1,30 +1,29 @@
-package gr.iti.mklab.sfc.streams.impl;
+package gr.iti.mklab.manager.streams.impl;
 
 import org.apache.log4j.Logger;
 
 import gr.iti.mklab.framework.Credentials;
-import gr.iti.mklab.framework.common.domain.Source;
-import gr.iti.mklab.framework.retrievers.RateLimitsMonitor;
 import gr.iti.mklab.framework.retrievers.impl.GooglePlusRetriever;
-import gr.iti.mklab.sfc.streams.Stream;
-import gr.iti.mklab.sfc.streams.StreamConfiguration;
-import gr.iti.mklab.sfc.streams.StreamException;
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.manager.streams.Stream;
 
 /**
  * Class responsible for setting up the connection to Google API
  * for retrieving relevant Google+ content.
- * @author ailiakop
- * @email  ailiakop@iti.gr
+ * 
+ * @author manosetro
+ * @email  manosetro@iti.gr
  */
 public class GooglePlusStream extends Stream {
-	public static final Source SOURCE = Source.GooglePlus;
+	
+	public static final String SOURCE = "GooglePlus";
 	
 	private Logger logger = Logger.getLogger(GooglePlusStream.class);
 	
 	private String key;
 
 	@Override
-	public void open(StreamConfiguration config) throws StreamException {
+	public void open(Configuration config) throws Exception {
 		logger.info("#GooglePlus : Open stream");
 		
 		if (config == null) {
@@ -39,15 +38,15 @@ public class GooglePlusStream extends Stream {
 		
 		if (key == null) {
 			logger.error("#GooglePlus : Stream requires authentication.");
-			throw new StreamException("Stream requires authentication.");
+			throw new Exception("Stream requires authentication.");
 		}
 		
 		Credentials credentials = new Credentials();
 		credentials.setKey(key);
 		
-		RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxResults), Long.parseLong(maxRunningTime));
+		//RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxResults), Long.parseLong(maxRunningTime));
 		
-		retriever = new GooglePlusRetriever(credentials, rateLimitsMonitor);
+		retriever = new GooglePlusRetriever(credentials);
 		
 	}
 	

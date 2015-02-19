@@ -1,17 +1,17 @@
-package gr.iti.mklab.sfc.storages;
+package gr.iti.mklab.manager.storages;
+
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.simmo.UserAccount;
+import gr.iti.mklab.simmo.documents.Post;
+import gr.iti.mklab.simmo.util.Location;
 
 import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
-import gr.iti.mklab.framework.client.search.solr.SolrItemHandler;
-import gr.iti.mklab.framework.client.search.solr.SolrMediaItemHandler;
-import gr.iti.mklab.framework.client.search.solr.SolrWebPageHandler;
-import gr.iti.mklab.framework.common.domain.config.Configuration;
-import gr.iti.mklab.framework.common.domain.Item;
-import gr.iti.mklab.framework.common.domain.MediaItem;
-import gr.iti.mklab.framework.common.domain.WebPage;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.beans.Field;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
 /**
  * Class for storing items to solr
@@ -27,135 +27,66 @@ public class SolrStorage implements Storage {
 	private static final String SERVICE = "solr.service";
 	
 	private static final String ITEMS_COLLECTION = "solr.items.collection";
-	private static final String MEDIAITEMS_COLLECTION = "solr.mediaitems.collection";
-	private static final String WEBPAGES_COLLECTION = "solr.webpages.collection";
-	
-	private static final String ONLY_ORIGINAL = "solr.onlyOriginal";
 	
 	private String hostname, service;
 	
-	private String itemsCollection = null;
-	private String mediaItemsCollection = null;
-	private String webPagesCollection = null;
+	private String collection = null;
 	
 	private String storageName = "Solr";
-	
-	private SolrItemHandler solrItemHandler = null; 
-	private SolrMediaItemHandler solrMediaHandler = null;
-	private SolrWebPageHandler solrWebpageHandler = null;
-	
-	private Boolean onlyOriginal = true;
+
+	private HttpSolrServer server;
 	
 	public SolrStorage(Configuration config) throws IOException {
 		this.hostname = config.getParameter(SolrStorage.HOSTNAME);
 		this.service = config.getParameter(SolrStorage.SERVICE);
-		this.itemsCollection = config.getParameter(SolrStorage.ITEMS_COLLECTION);
-		this.mediaItemsCollection = config.getParameter(SolrStorage.MEDIAITEMS_COLLECTION);
-		this.webPagesCollection = config.getParameter(SolrStorage.WEBPAGES_COLLECTION);
-	
-		this.onlyOriginal = Boolean.valueOf(config.getParameter(SolrStorage.ONLY_ORIGINAL, "true"));
-	}
-	
-	public SolrItemHandler getItemHandler() {
-		return solrItemHandler;
-	}
-	
-	public SolrMediaItemHandler getMediaItemHandler() {
-		return solrMediaHandler;
+		this.collection = config.getParameter(SolrStorage.ITEMS_COLLECTION);
 	}
 	
 	@Override
-	public boolean open(){
-		
+	public boolean open() {
 		try {
-			
-			if(itemsCollection != null) {
-				solrItemHandler = SolrItemHandler.getInstance(hostname+"/"+service+"/"+itemsCollection);
+			if(collection != null) {
+				String baseURL = hostname+"/"+service+"/"+collection;
+				server = new HttpSolrServer(baseURL);
 			}
-			
-			if(mediaItemsCollection != null) {	
-				solrMediaHandler = SolrMediaItemHandler.getInstance(hostname+"/"+service+"/"+mediaItemsCollection);
-			}
-			
-			if(webPagesCollection != null) {	
-				solrWebpageHandler = SolrWebPageHandler.getInstance(hostname+"/"+service+"/"+webPagesCollection);
-			}
-			
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e);
 			return false;
 		}
-		return true;
-		
+		return true;	
 	}
 
 	@Override
-	public void store(Item item) throws IOException {
-		
-		// Index only original Items and MediaItems come from original Items
-		if(!item.isOriginal() && onlyOriginal) {
-			return;
-		}
-		
-		if(solrItemHandler != null) {
-			solrItemHandler.insert(item);
-		}
-		
-		if(solrMediaHandler != null) {
-			
-			for(MediaItem mediaItem : item.getMediaItems()) {
-				
-				solrMediaHandler.insert(mediaItem);
-				//solrMediaHandler.insertMediaItem(mi);
-				
+	public void store(Post post) throws IOException {		
+		if(server != null) {
+			PostBean bean = new PostBean(post);
+			try {
+				server.addBean(bean);
+			} catch (SolrServerException e) {
+				logger.error(e);
 			}
 		}
-		if(solrWebpageHandler != null) {
-			List<WebPage> webPages = item.getWebPages();
-			if(webPages != null) {
-				solrWebpageHandler.insert(webPages);
-			}
-		}
-		
 	}
 	
 
 	@Override
-	public void update(Item update) throws IOException {
+	public void update(Post update) throws IOException {
 		store(update);
 	}
 	
 	@Override
-	public boolean delete(String itemId) throws IOException {
-		logger.info("Delete item with id " + itemId + " from Solr.");
-		solrItemHandler.delete(itemId);
+	public boolean delete(String postId) throws IOException {
+		logger.info("Delete post with id " + postId + " from Solr.");
+		try {
+			server.deleteById(postId);
+		} catch (SolrServerException e) {
+			logger.error(e);
+		}
 		return true;
 	}
 	
 	@Override
 	public boolean checkStatus() {
-		
-		if(itemsCollection != null) {
-			try {
-				return true;
-			} 
-			catch (Exception e) {
-				logger.error(e);
-				return false;
-			}
-		}
-		
-		if(mediaItemsCollection != null) {
-			try {
-				return true;
-			} 
-			catch (Exception e) {
-				logger.error(e);
-				return false;
-			}
-		}
-
 		return false;
 	}
 	
@@ -164,16 +95,78 @@ public class SolrStorage implements Storage {
 	public void close() {
 
 	}
-
-	@Override
-	public void updateTimeslot() {
-
-	}
 	
 	@Override
 	public String getStorageName() {
 		return this.storageName;
 	}
-	
-	
+
+	/**
+	 *
+	 * @author 	Manos Schinas
+	 * @email	manosetro@iti.gr
+	 * 
+	 */
+	public static class PostBean {
+
+		@Field(value = "id")
+	    private String id;
+	    
+	    @Field(value = "title")
+	    private String title;
+	    
+	    @Field(value = "description")
+	    private String description;
+	    
+	    @Field(value = "tags")
+	    private List<String> tags;
+
+	    @Field(value = "language")
+	    private String language;
+	    
+	    @Field(value = "publicationTime")
+	    private long publicationTime;
+	    
+	    @Field(value = "contributorId")
+	    private String contributorId;
+	    
+	    @Field(value = "latitude")
+	    private Double latitude;
+	    
+	    @Field(value = "longitude")
+	    private Double longitude;
+	    
+	    @Field(value = "city")
+	    private String city;
+	    
+	    @Field(value = "country")
+	    private String country;
+
+	    public PostBean(Post post) {
+
+	        id = post.getId();
+	        title = post.getTitle();
+	        description = post.getDescription();
+	        tags = post.getTags();
+	        language = post.getLanguage();
+	        publicationTime = post.getCreationDate().getTime();
+
+	        Location location = post.getLocation();
+	        if(location != null) {
+	        	double[] coordinates = location.getCoordinates();
+	        	if(coordinates != null && coordinates.length == 2) {
+	        		latitude = coordinates[0];
+	        		longitude = coordinates[1];	
+	        	}
+	        	city = location.getCity();
+	        	country = location.getCountry();
+	        }
+	        
+	        UserAccount contributor = post.getContributor();
+	        if(contributor != null) {
+	        	contributorId = contributor.getId();
+	        }
+	    }
+	}
+
 }

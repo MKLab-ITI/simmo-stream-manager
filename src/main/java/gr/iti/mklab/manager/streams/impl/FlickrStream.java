@@ -1,33 +1,31 @@
-package gr.iti.mklab.sfc.streams.impl;
+package gr.iti.mklab.manager.streams.impl;
 
 import org.apache.log4j.Logger;
 
 import gr.iti.mklab.framework.Credentials;
-import gr.iti.mklab.framework.common.domain.Source;
-import gr.iti.mklab.framework.retrievers.RateLimitsMonitor;
 import gr.iti.mklab.framework.retrievers.impl.FlickrRetriever;
-import gr.iti.mklab.sfc.streams.Stream;
-import gr.iti.mklab.sfc.streams.StreamConfiguration;
-import gr.iti.mklab.sfc.streams.StreamException;
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.manager.streams.Stream;
 
 /**
  * Class responsible for setting up the connection to Flickr API
  * for retrieving relevant Flickr content.
- * @author ailiakop
- * @email  ailiakop@iti.gr
+ * 
+ * @author manosetro
+ * @email  manosetro@iti.gr
  */
 public class FlickrStream extends Stream {
 
 	private Logger logger = Logger.getLogger(FlickrStream.class);
 	
-	public static final Source SOURCE = Source.Flickr;
+	public static final String SOURCE = "Flickr";
 	
 	private String key;
 	private String secret;
 
 	
 	@Override
-	public void open(StreamConfiguration config) throws StreamException {
+	public void open(Configuration config) throws Exception {
 		logger.info("#Flickr : Open stream");
 		
 		if (config == null) {
@@ -43,16 +41,16 @@ public class FlickrStream extends Stream {
 		
 		if (key == null || secret==null) {
 			logger.error("#Flickr : Stream requires authentication.");
-			throw new StreamException("Stream requires authentication.");
+			throw new Exception("Stream requires authentication.");
 		}
 		
 		Credentials credentials = new Credentials();
 		credentials.setKey(key);
 		credentials.setSecret(secret);
 		
-		RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxResults), Long.parseLong(maxRequests));
+		//RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxResults), Long.parseLong(maxRequests));
 		
-		retriever = new FlickrRetriever(credentials, rateLimitsMonitor);
+		retriever = new FlickrRetriever(credentials);
 		
 	}
 	

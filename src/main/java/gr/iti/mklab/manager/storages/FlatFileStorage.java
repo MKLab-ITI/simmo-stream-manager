@@ -1,4 +1,7 @@
-package gr.iti.mklab.sfc.storages;
+package gr.iti.mklab.manager.storages;
+
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.simmo.documents.Post;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,8 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import gr.iti.mklab.framework.common.domain.config.Configuration;
-import gr.iti.mklab.framework.common.domain.Item;
 
 /**
  * Class for storing items to a flat file
@@ -16,6 +17,7 @@ import gr.iti.mklab.framework.common.domain.Item;
  *
  */
 public class FlatFileStorage implements Storage {	
+	
 	private static String NAME = "name";
 	private static String STORAGE_FILE = "file";
 	
@@ -37,15 +39,15 @@ public class FlatFileStorage implements Storage {
 	
 	public FlatFileStorage(String storageDirectory) {
 		this.storageDirectory = new File(storageDirectory);
-		
 		this.fileToStore = "/items.";
 	}
 	
 	@Override
-	public void store(Item item){
+	public void store(Post post) {
 		items++;
 		if (out != null) {
-			out.println(item.toString());
+			out.println(post.getId() + "\t" + post.getCreationDate() + "\t" 
+					+ post.getTitle().replaceAll("[\t\n]", " "));
 			out.flush();
 			
 		}
@@ -80,20 +82,8 @@ public class FlatFileStorage implements Storage {
 	}
 
 	@Override
-	public void updateTimeslot() {
-
-	}
-
-	@Override
-	public void update(Item update) throws IOException {
-		items++;
-		if (out != null) {
-			out.println(update.toString());
-			out.flush();
-		}
-		if(items%1000==0) {
-			open();	
-		}
+	public void update(Post post) throws IOException {
+		store(post);
 	}
 
 	@Override

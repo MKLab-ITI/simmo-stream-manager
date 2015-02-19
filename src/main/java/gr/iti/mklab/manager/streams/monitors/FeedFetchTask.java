@@ -1,4 +1,4 @@
-package gr.iti.mklab.sfc.streams.monitors;
+package gr.iti.mklab.manager.streams.monitors;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 

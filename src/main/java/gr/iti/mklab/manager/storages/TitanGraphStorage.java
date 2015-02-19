@@ -1,4 +1,8 @@
-package gr.iti.mklab.sfc.storages;
+package gr.iti.mklab.manager.storages;
+
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.simmo.UserAccount;
+import gr.iti.mklab.simmo.documents.Post;
 
 import java.io.IOException;
 
@@ -7,13 +11,10 @@ import org.apache.commons.configuration.BaseConfiguration;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Compare;
-import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
-import gr.iti.mklab.framework.common.domain.config.Configuration;
-import gr.iti.mklab.framework.common.domain.Item;
 
-public class TitanGraphDbStorage implements Storage {
+public class TitanGraphStorage implements Storage {
 
 	private static String STORAGE_BACKEND = "titan.storage.backend";
 	private static String STORAGE_TABLENAME = "titan.storage.tablename";
@@ -37,17 +38,17 @@ public class TitanGraphDbStorage implements Storage {
 	
 	private TitanGraph titanGraph;
 	
-	public TitanGraphDbStorage(Configuration config) {
-		this.storageBackend = config.getParameter(TitanGraphDbStorage.STORAGE_BACKEND);
-		this.storageTableName = config.getParameter(TitanGraphDbStorage.STORAGE_TABLENAME);
+	public TitanGraphStorage(Configuration config) {
+		this.storageBackend = config.getParameter(TitanGraphStorage.STORAGE_BACKEND);
+		this.storageTableName = config.getParameter(TitanGraphStorage.STORAGE_TABLENAME);
 		
-		this.vertexUserId = config.getParameter(TitanGraphDbStorage.VERTEX_USER_ID);
+		this.vertexUserId = config.getParameter(TitanGraphStorage.VERTEX_USER_ID);
 		
-		this.edgeReTweets = config.getParameter(TitanGraphDbStorage.EDGE_RETWEETS);
-		this.edgeMentions = config.getParameter(TitanGraphDbStorage.EDGE_MENTIONS);
+		this.edgeReTweets = config.getParameter(TitanGraphStorage.EDGE_RETWEETS);
+		this.edgeMentions = config.getParameter(TitanGraphStorage.EDGE_MENTIONS);
 		
-		this.edgePropertyTimestamp = config.getParameter(TitanGraphDbStorage.EDGE_PROPERTY_TIMESTAMP);
-		this.edgePropertyTweedId = config.getParameter(TitanGraphDbStorage.EDGE_PROPERTY_TWEETID);
+		this.edgePropertyTimestamp = config.getParameter(TitanGraphStorage.EDGE_PROPERTY_TIMESTAMP);
+		this.edgePropertyTweedId = config.getParameter(TitanGraphStorage.EDGE_PROPERTY_TWEETID);
 	}
 	
 	@Override
@@ -64,15 +65,22 @@ public class TitanGraphDbStorage implements Storage {
 	}
 
 	@Override
-	public void store(Item item) throws IOException {
-		String userId = item.getUserId();
-		String tweetId = item.getId();
-		long timestamp = item.getPublicationTime();
+	public void store(Post post) throws IOException {
+		
+		UserAccount contributor = post.getContributor();
+		if(contributor == null)
+			return;
+		
+		String userId = contributor.getId();
+		
+		String tweetId = post.getId();
+		long timestamp = post.getCreationDate().getTime();
 //		String title = item.getTitle();
 		
 		Vertex source = getOrCreateVertex(userId, vertexUserId);
 		
 		//handle mentions
+		/*
 		String[] mentions = item.getMentions();
 		for(String userMention : mentions) {
 			Edge edge;
@@ -92,12 +100,12 @@ public class TitanGraphDbStorage implements Storage {
 			edge.setProperty(edgePropertyTimestamp, timestamp);
 			
 		}
-		
+		*/
 		titanGraph.commit();
 	}
 
 	@Override
-	public void update(Item update) throws IOException {
+	public void update(Post post) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -106,12 +114,6 @@ public class TitanGraphDbStorage implements Storage {
 	public boolean delete(String id) throws IOException {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public void updateTimeslot() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

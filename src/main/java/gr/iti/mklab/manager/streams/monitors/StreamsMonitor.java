@@ -1,4 +1,4 @@
-package gr.iti.mklab.sfc.streams.monitors;
+package gr.iti.mklab.manager.streams.monitors;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,16 +12,16 @@ import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 
-import gr.iti.mklab.framework.common.domain.Item;
 import gr.iti.mklab.framework.feeds.Feed;
-import gr.iti.mklab.sfc.streams.Stream;
-
+import gr.iti.mklab.manager.streams.Stream;
+import gr.iti.mklab.simmo.documents.Post;
 
 /**
  * Thread-safe class for monitoring the streams that correspond to each social network
  * Currently 7 social networks are supported (Twitter, Youtube, Flickr, Instagram, Tumblr, Facebook, GooglePlus)
- * @author ailiakop
- * @email  ailiakop@iti.gr
+ * 
+ * @author manosetro
+ * @email  manosetro@iti.gr
  */
 public class StreamsMonitor {
 	
@@ -38,7 +38,7 @@ public class StreamsMonitor {
 	private Map<String, Long> runningTimePerStream = new HashMap<String, Long>();
 	
 	private Map<String, StreamFetchTask> streamsFetchTasks = new HashMap<String, StreamFetchTask>();
-	private Map<String, Future<List<Item>>> responses = new HashMap<String, Future<List<Item>>>();
+	private Map<String, Future<List<Post>>> responses = new HashMap<String, Future<List<Post>>>();
 	
 	boolean isFinished = false;
 	
@@ -49,27 +49,27 @@ public class StreamsMonitor {
 		executor = Executors.newFixedThreadPool(numberOfStreams);
 	}
 	
-	public Collection<Item> getTotalRetrievedItems() {
-		Map<String, Item> totalRetrievedItems = new HashMap<String, Item>();
+	public Collection<Post> getTotalRetrievedItems() {
+		Map<String, Post> totalRetrievedPosts = new HashMap<String, Post>();
 		for(String streamId : responses.keySet()) {
 			try {
-				Future<List<Item>> response = responses.get(streamId);
+				Future<List<Post>> response = responses.get(streamId);
 				
 				if(!response.isDone())
 					continue;
 				
-				List<Item> retrievedItems = response.get();
-				if(retrievedItems != null) {
-					logger.info("Got " + retrievedItems.size() + " items from " + streamId);
-					for(Item item : retrievedItems) {
-						totalRetrievedItems.put(item.getId(), item);
+				List<Post> retrievedPosts = response.get();
+				if(retrievedPosts != null) {
+					logger.info("Got " + retrievedPosts.size() + " posts from " + streamId);
+					for(Post post : retrievedPosts) {
+						totalRetrievedPosts.put(post.getId(), post);
 					}
 				}
 			} catch (Exception e) {
 				logger.error(e);
 			}
 		}
-		return totalRetrievedItems.values();
+		return totalRetrievedPosts.values();
 	}
 	
 	public int getNumberOfStreamFetchTasks() {
@@ -154,7 +154,7 @@ public class StreamsMonitor {
 			
 			streamsFetchTasks.put(streamId, streamTask);
 			
-			Future<List<Item>> response = executor.submit(streamTask);
+			Future<List<Post>> response = executor.submit(streamTask);
 			responses.put(streamId, response);
 	
 			runningTimePerStream.put(streamId, System.currentTimeMillis());
@@ -196,7 +196,7 @@ public class StreamsMonitor {
 			try {
 				Stream stream = entry.getValue();
 				StreamFetchTask fetchTask = new StreamFetchTask(stream, feeds);
-				Future<List<Item>> response = executor.submit(fetchTask);
+				Future<List<Post>> response = executor.submit(fetchTask);
 				responses.put(streamId, response);
 			}
 			catch(Exception e) {
@@ -220,7 +220,7 @@ public class StreamsMonitor {
 				try {
 					Stream stream = entry.getValue();
 					StreamFetchTask fetchTask = new StreamFetchTask(stream, feeds);
-					Future<List<Item>> response = executor.submit(fetchTask);
+					Future<List<Post>> response = executor.submit(fetchTask);
 					responses.put(streamId, response);
 					logger.info("Start stream task : " + entry.getKey() + " with " + feeds.size() + " feeds");
 				} catch (Exception e) {
@@ -250,7 +250,7 @@ public class StreamsMonitor {
 				
 				for(String streamId : runningTimePerStream.keySet()) {
 					if((currentTime - runningTimePerStream.get(streamId)) >= DEFAULT_REQUEST_PERIOD) {
-						Future<List<Item>> response = responses.get(streamId);
+						Future<List<Post>> response = responses.get(streamId);
 						if(response == null || response.isDone() || response.isCancelled()) {	
 							// Reinitialize task as the previous one is done or cancelled
 							logger.info("* Re-Initialize " + streamId);
@@ -281,7 +281,7 @@ public class StreamsMonitor {
 		streamIds.addAll(responses.keySet());
 		
 		for(String streamId : streamIds) {
-			Future<List<Item>> response = responses.get(streamId);	
+			Future<List<Post>> response = responses.get(streamId);	
 			try {
 				if(response.isCancelled()) {
 					responses.remove(streamId);

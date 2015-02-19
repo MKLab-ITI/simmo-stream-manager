@@ -8,8 +8,9 @@ import org.apache.log4j.Logger;
 
 import gr.iti.mklab.framework.feeds.Feed;
 import gr.iti.mklab.framework.retrievers.Retriever;
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.manager.streams.management.StorageHandler;
 import gr.iti.mklab.simmo.documents.Post;
-
 
 /**
  * Class responsible for handling the stream of information regarding 
@@ -19,8 +20,6 @@ import gr.iti.mklab.simmo.documents.Post;
  * and the retrieval/storing of relevant content.
  * @author manosetro
  * @email  manosetro@iti.gr
- * @author ailiakop
- * @email  ailiakop@iti.gr
  *
  */
 public abstract class Stream {//implements Runnable {
@@ -37,7 +36,7 @@ public abstract class Stream {//implements Runnable {
 	protected static final String MAX_REQUESTS = "maxRequests";
 	protected static final String MAX_RUNNING_TIME = "maxRunningTime";
 	
-	protected FeedsMonitor monitor;
+	//protected FeedsMonitor monitor;
 	
 	protected BlockingQueue<Feed> feedsQueue;
 	protected Retriever retriever = null;
@@ -53,7 +52,7 @@ public abstract class Stream {//implements Runnable {
 	 * @throws StreamException
 	 *      In any case of error during stream open
 	 */
-	public abstract void open(StreamConfiguration config) throws Exception;
+	public abstract void open(Configuration config) throws Exception;
 	
 	/**
 	 * Closes a stream 
@@ -62,16 +61,10 @@ public abstract class Stream {//implements Runnable {
 	 */
 	public void close() throws Exception {
 	
-		if(monitor != null) {
-			logger.info("Stop monitor");
-			monitor.stopMonitor();
-		}
-		
-		if(retriever != null) {
-			logger.info("Stop retriever");
-			retriever.stop();
-		}
-		
+		//if(monitor != null) {
+		//	logger.info("Stop monitor");
+		//	monitor.stopMonitor();
+		//}
 		logger.info("Close Stream  : " + this.getClass().getName());
 	}
 		
@@ -92,7 +85,7 @@ public abstract class Stream {//implements Runnable {
 		if(retriever == null)
 			return false;
 		
-		monitor = new FeedsMonitor(retriever);
+		//monitor = new FeedsMonitor(retriever);
 		return true;
 	}
 	

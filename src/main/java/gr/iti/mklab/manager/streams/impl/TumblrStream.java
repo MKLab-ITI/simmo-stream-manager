@@ -1,14 +1,11 @@
-package gr.iti.mklab.sfc.streams.impl;
+package gr.iti.mklab.manager.streams.impl;
 
 import org.apache.log4j.Logger;
 
 import gr.iti.mklab.framework.Credentials;
-import gr.iti.mklab.framework.common.domain.Source;
-import gr.iti.mklab.framework.retrievers.RateLimitsMonitor;
 import gr.iti.mklab.framework.retrievers.impl.TumblrRetriever;
-import gr.iti.mklab.sfc.streams.Stream;
-import gr.iti.mklab.sfc.streams.StreamConfiguration;
-import gr.iti.mklab.sfc.streams.StreamException;
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.manager.streams.Stream;
 
 /**
  * Class responsible for setting up the connection to Tumblr API
@@ -18,7 +15,7 @@ import gr.iti.mklab.sfc.streams.StreamException;
  */
 public class TumblrStream extends Stream {
 	
-	public static final Source SOURCE = Source.Tumblr;
+	public static final String SOURCE = "Tumblr";
 	
 	private String consumerKey;
 	private String consumerSecret;
@@ -27,7 +24,7 @@ public class TumblrStream extends Stream {
 
 	
 	@Override
-	public void open(StreamConfiguration config) throws StreamException {
+	public void open(Configuration config) throws Exception {
 		logger.info("#Tumblr : Open stream");
 		
 		if (config == null) {
@@ -44,22 +41,22 @@ public class TumblrStream extends Stream {
 		
 		if (consumerKey == null || consumerSecret==null) {
 			logger.error("#Tumblr : Stream requires authentication.");
-			throw new StreamException("Stream requires authentication.");
+			throw new Exception("Stream requires authentication.");
 		}
 		
 		Credentials credentials = new Credentials();
 		credentials.setKey(consumerKey);
 		credentials.setSecret(consumerSecret);
 		
-		RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxRequests), Long.parseLong(maxRunningTime));
+		//RateLimitsMonitor rateLimitsMonitor = new RateLimitsMonitor(Integer.parseInt(maxRequests), Long.parseLong(maxRunningTime));
 		
-		retriever = new TumblrRetriever(credentials, rateLimitsMonitor);
+		retriever = new TumblrRetriever(credentials);
 		
 	}
 
 	@Override
 	public String getName() {
-		return "Tumblr";
+		return SOURCE;
 	}
 	
 }

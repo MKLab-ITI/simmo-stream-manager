@@ -1,4 +1,4 @@
-package gr.iti.mklab.sfc.streams.management;
+package gr.iti.mklab.manager.streams.management;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,15 +8,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import gr.iti.mklab.framework.feeds.Feed;
-import gr.iti.mklab.sfc.input.DataInputType;
-import gr.iti.mklab.sfc.input.FeedsCreator;
-import gr.iti.mklab.sfc.input.InputConfiguration;
-import gr.iti.mklab.sfc.streams.Stream;
-import gr.iti.mklab.sfc.streams.StreamConfiguration;
-import gr.iti.mklab.sfc.streams.StreamException;
-import gr.iti.mklab.sfc.streams.StreamsManagerConfiguration;
-import gr.iti.mklab.sfc.streams.monitors.StreamsMonitor;
-import gr.iti.mklab.sfc.subscribers.Subscriber;
+import gr.iti.mklab.manager.config.Configuration;
+import gr.iti.mklab.manager.config.StreamManagerConfiguration;
+import gr.iti.mklab.manager.input.FeedsCreator;
+import gr.iti.mklab.manager.streams.Stream;
 
 /**
  * Class for retrieving content according to 
@@ -27,8 +22,6 @@ import gr.iti.mklab.sfc.subscribers.Subscriber;
  * @author manosetro
  * @email  manosetro@iti.gr
  * 
- * @author ailiakop
- * @email  ailiakop@iti.gr
  */
 public class StreamsManager {
 	
@@ -39,28 +32,24 @@ public class StreamsManager {
 	}
 
 	private Map<String, Stream> streams = null;
-	private Map<String, Subscriber> subscribers = null;
-	private StreamsManagerConfiguration config = null;
-	private InputConfiguration inputConfig = null;
+	private StreamManagerConfiguration config = null;
+	
 	private StorageHandler storageHandler;
-	private StreamsMonitor monitor;
+	
+	//private StreamsMonitor monitor;
 	
 	private ManagerState state = ManagerState.CLOSE;
 
 	private List<Feed> feeds = new ArrayList<Feed>();
 
-	public StreamsManager(StreamsManagerConfiguration config, InputConfiguration input_config) throws StreamException {
+	public StreamsManager(StreamManagerConfiguration config) throws Exception {
 
 		if (config == null) {
-			throw new StreamException("Manager's configuration must be specified");
+			throw new Exception("Manager's configuration must be specified");
 		}
 		
 		//Set the configuration files
 		this.config = config;
-		this.inputConfig = input_config;
-		
-		//Set up the Subscribers
-		initSubscribers();
 		
 		//Set up the Streams
 		initStreams();
@@ -72,7 +61,7 @@ public class StreamsManager {
 	 * 
 	 * @throws StreamException
 	 */
-	public synchronized void open() throws StreamException {
+	public synchronized void open() throws Exception {
 		
 		if (state == ManagerState.OPEN) {
 			return;
@@ -84,7 +73,7 @@ public class StreamsManager {
 		try {
 			//If there are Streams to monitor start the StreamsMonitor
 			if(streams != null && !streams.isEmpty()) {
-				monitor = new StreamsMonitor(streams.size());
+				//monitor = new StreamsMonitor(streams.size());
 			}
 			
 			//Start stream handler 
@@ -92,26 +81,13 @@ public class StreamsManager {
 			storageHandler.start();	
 			logger.info("Store Manager is ready to store.");
 			
-			FeedsCreator feedsCreator = new FeedsCreator(DataInputType.MONGO_STORAGE, inputConfig);
-			Map<String, List<Feed>> results = feedsCreator.getQueryPerStream();
-			
-			//Start the Subscribers
-			for(String subscriberId : subscribers.keySet()) {
-				logger.info("Stream Manager - Start Subscriber : " + subscriberId);
-				StreamConfiguration srconfig = config.getSubscriberConfig(subscriberId);
-				Subscriber subscriber = subscribers.get(subscriberId);
-				subscriber.setHandler(storageHandler);
-				subscriber.open(srconfig);
-			
-				feeds = results.get(subscriberId);
-				subscriber.subscribe(feeds);
-				
-			}
+			FeedsCreator feedsCreator = new FeedsCreator(config);
+			Map<String, List<Feed>> results = feedsCreator.createFeedsPerSource();
 			
 			//Start the Streams
 			for (String streamId : streams.keySet()) {
 				logger.info("Stream Manager - Start Stream : " + streamId);
-				StreamConfiguration sconfig = config.getStreamConfig(streamId);
+				Configuration sconfig = config.getStreamConfig(streamId);
 				Stream stream = streams.get(streamId);
 				stream.setHandler(storageHandler);
 				stream.open(sconfig);
@@ -125,20 +101,20 @@ public class StreamsManager {
 					continue;
 				}
 				
-				if(monitor != null) {
-					monitor.addStream(streamId, stream, feeds);
-					monitor.startStream(streamId);
-				}
+				//if(monitor != null) {
+				//	monitor.addStream(streamId, stream, feeds);
+				//	monitor.startStream(streamId);
+				//}
 			}
 			
-			if(monitor != null && monitor.getNumberOfStreamFetchTasks() > 0) {
-				monitor.startReInitializer();
-			}
+			//if(monitor != null && monitor.getNumberOfStreamFetchTasks() > 0) {
+			//	monitor.startReInitializer();
+			//}
 
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			throw new StreamException("Error during streams open", e);
+			throw new Exception("Error during streams open", e);
 		}
 	}
 	
@@ -146,7 +122,7 @@ public class StreamsManager {
 	 * Closes Manager and its auxiliary modules
 	 * @throws StreamException
 	 */
-	public synchronized void close() throws StreamException {
+	public synchronized void close() throws Exception {
 		
 		if (state == ManagerState.CLOSE) {
 			logger.info("StreamManager is already closed.");
@@ -166,7 +142,7 @@ public class StreamsManager {
 			state = ManagerState.CLOSE;
 		}
 		catch(Exception e) {
-			throw new StreamException("Error during streams close", e);
+			throw new Exception("Error during streams close", e);
 		}
 	}
 	
@@ -175,37 +151,18 @@ public class StreamsManager {
 	 * relevant content
 	 * @throws StreamException
 	 */
-	private void initStreams() throws StreamException {
+	private void initStreams() throws Exception {
 		streams = new HashMap<String, Stream>();
 		try{
 			for (String streamId : config.getStreamIds()){
-				StreamConfiguration sconfig = config.getStreamConfig(streamId);
-				streams.put(streamId,(Stream)Class.forName(sconfig.getParameter(StreamConfiguration.CLASS_PATH)).newInstance());
+				Configuration sconfig = config.getStreamConfig(streamId);
+				String className = sconfig.getParameter(Configuration.CLASS_PATH);
+				streams.put(streamId,(Stream)Class.forName(className).newInstance());
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
-			throw new StreamException("Error during streams initialization", e);
+			throw new Exception("Error during streams initialization", e);
 		}
 	}
-	
-	/**
-	 * Initializes the streams apis, that implement subscriber channels, that are going to be searched for 
-	 * relevant content
-	 * @throws StreamException
-	 */
-	private void initSubscribers() throws StreamException {
-		
-		subscribers = new HashMap<String, Subscriber>();
-		try {
-			for (String subscriberId : config.getSubscriberIds()) {
-				StreamConfiguration sconfig = config.getSubscriberConfig(subscriberId);
-				Subscriber subscriber = (Subscriber) Class.forName(sconfig.getParameter(StreamConfiguration.CLASS_PATH)).newInstance();
-				subscribers.put(subscriberId, subscriber);
-			}
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			throw new StreamException("Error during Subscribers initialization", e);
-		}
-	}
+
 }

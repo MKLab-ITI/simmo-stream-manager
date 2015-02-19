@@ -1,4 +1,4 @@
-package gr.iti.mklab.sfc.streams.monitors;
+package gr.iti.mklab.manager.streams.monitors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,19 +6,18 @@ import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 
-import gr.iti.mklab.framework.common.domain.Item;
 import gr.iti.mklab.framework.feeds.Feed;
-import gr.iti.mklab.sfc.streams.Stream;
-
+import gr.iti.mklab.manager.streams.Stream;
+import gr.iti.mklab.simmo.documents.Post;
 
 /**
  * Class for handling a Stream Task that is responsible for retrieving
  * content for the stream it is assigned to.
  * 
- * @author ailiakop
- * @email  ailiakop@iti.gr
+ * @author manosetro
+ * @email  manosetro@iti.gr
  */
-public class StreamFetchTask implements  Callable<List<Item>> {
+public class StreamFetchTask implements  Callable<List<Post>> {
 	
 	private final Logger logger = Logger.getLogger(StreamFetchTask.class);
 	
@@ -56,15 +55,15 @@ public class StreamFetchTask implements  Callable<List<Item>> {
 	 * making rest calls to stream's API. 
 	 */
 	@Override
-	public List<Item> call() throws Exception {
+	public List<Post> call() throws Exception {
 		try {
-			List<Item> items = stream.poll(feeds);
+			List<Post> items = stream.poll(feeds);
 			
 			return items;
 		} catch (Exception e) {
 			logger.error("ERROR IN STREAM FETCH TASK: " + e.getMessage());
 		}
 		
-		return new ArrayList<Item>();
+		return new ArrayList<Post>();
 	}
 }
