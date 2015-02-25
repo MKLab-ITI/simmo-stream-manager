@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
   	<groupId>gr.iti.mklab</groupId>
   	<artifactId>simmo-stream-manager</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
+  	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>simmo-stream-manager</name>
@@ -47,7 +47,7 @@
         <dependency>
     		<groupId>gr.iti.mklab</groupId>
     		<artifactId>simmo</artifactId>
-    		<version>1.0-SNAPSHOT</version>
+    		<version>0.1-SNAPSHOT</version>
     	</dependency>
     	<dependency>
     		<groupId>gr.iti.mklab</groupId>
@@ -86,18 +86,8 @@
                 </plugin>
           	</plugins>
 		</pluginManagement>
+		
         <plugins>
-        	<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.3</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>sonatype-nexus-staging</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -147,6 +137,42 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.7.1</version>
+                <executions>
+                    <execution>
+                    	<id>StreamsManager</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>                                       
+                                    </excludes>
+                                </filter>		
+                            </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>gr.iti.mklab.manager.streams.management.StreamsManager</Main-Class>
+                                        <Build-Number>123</Build-Number>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
     </build>
     
