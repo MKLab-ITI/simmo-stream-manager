@@ -2,8 +2,6 @@ package gr.iti.mklab.simmo.sfc.input;
 
 import gr.iti.mklab.framework.Configuration;
 import gr.iti.mklab.framework.feeds.Feed;
-import gr.iti.mklab.simmo.morphia.MorphiaManager;
-import gr.iti.mklab.simmo.morphia.ObjectDAO;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.QueryResults;
+
+import com.mongodb.MongoClient;
 
 
 /**
@@ -27,17 +29,21 @@ public class FeedsCreator {
 	protected static final String HOST = "host";
 	protected static final String DB = "database";
 	
+	Morphia morphia = new Morphia();
+	
 	private String host = null;
 	private String db = null;
 	
-	private ObjectDAO<Feed> feedsDao;
+	private BasicDAO<Feed, String> feedsDao;
 	
 	public FeedsCreator(Configuration config) throws Exception {
+		morphia.map(Feed.class);
+		
 		this.host = config.getParameter(HOST);
 		this.db = config.getParameter(DB);
-		
-		MorphiaManager.setup(host);
-		feedsDao = new ObjectDAO<Feed>(Feed.class, db);
+				
+		MongoClient mongoClient = new MongoClient(host);
+		feedsDao = new BasicDAO<Feed, String>(Feed.class, mongoClient, morphia, db);
 	}
 	
 	public Map<String, Set<Feed>> createFeedsPerSource() {

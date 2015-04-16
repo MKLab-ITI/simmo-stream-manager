@@ -104,7 +104,7 @@ public abstract class Stream {
 			}
 			catch(Exception e) {
 				logger.error("Exception for feed " + feed.getId() + " of type " + feed.getClass());
-				logger.error(e.getMessage());
+				e.printStackTrace();
 			}
 			
 			logger.info("Retrieved items for " + getName() + " are : " + response.getNumberOfPosts());
