@@ -1,8 +1,8 @@
 package gr.iti.mklab.sm.processors;
 
-import gr.iti.mklab.simmo.documents.Post;
-
+import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
+
 import org.apache.log4j.Logger;
 
 import com.cybozu.labs.langdetect.Detector;

@@ -11,7 +11,7 @@ import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Key;
 
-import gr.iti.mklab.simmo.UserAccount;
+import gr.iti.mklab.simmo.core.UserAccount;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.GroupFeed;

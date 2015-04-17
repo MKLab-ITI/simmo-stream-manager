@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import gr.iti.mklab.framework.abstractions.socialmedia.posts.TwitterPost;
-import gr.iti.mklab.framework.abstractions.socialmedia.users.TwitterAccount;
-
+import gr.iti.mklab.simmo.core.UserAccount;
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.impl.posts.TwitterPost;
+import gr.iti.mklab.simmo.impl.users.TwitterAccount;
 import gr.iti.mklab.sm.feeds.Feed;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -28,8 +30,6 @@ import gr.iti.mklab.sm.feeds.GroupFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
-import gr.iti.mklab.simmo.UserAccount;
-import gr.iti.mklab.simmo.documents.Post;
 
 /**
  * Class responsible for retrieving Twitter content based on keywords, twitter users or locations

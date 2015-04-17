@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import gr.iti.mklab.framework.abstractions.socialmedia.media.YoutubeVideo;
-import gr.iti.mklab.framework.abstractions.socialmedia.users.YoutubeChannel;
-
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import com.google.api.services.youtube.model.Video;
 import com.google.gdata.client.youtube.YouTubeQuery;
 import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.Link;
@@ -27,15 +25,14 @@ import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.google.gdata.data.youtube.YtStatistics;
 import com.google.gdata.util.ServiceException;
 
+import gr.iti.mklab.simmo.core.UserAccount;
+import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.GroupFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
-import gr.iti.mklab.simmo.UserAccount;
-import gr.iti.mklab.simmo.documents.Post;
-import gr.iti.mklab.simmo.items.Video;
 
 /**
  * Class responsible for retrieving YouTube content based on keywords and YouTube users 

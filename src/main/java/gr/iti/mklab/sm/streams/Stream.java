@@ -2,13 +2,14 @@ package gr.iti.mklab.sm.streams;
 
 import java.util.Date;
 
+import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 import gr.iti.mklab.sm.feeds.Feed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.Retriever;
+
 import org.apache.log4j.Logger;
 
-import gr.iti.mklab.simmo.documents.Post;
 import gr.iti.mklab.sm.management.StorageHandler;
 import gr.iti.mklab.sm.streams.monitors.RateLimitsMonitor;
 

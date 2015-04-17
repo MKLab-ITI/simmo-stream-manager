@@ -1,13 +1,13 @@
 package gr.iti.mklab.sm.filters;
 
-import gr.iti.mklab.simmo.documents.Post;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;

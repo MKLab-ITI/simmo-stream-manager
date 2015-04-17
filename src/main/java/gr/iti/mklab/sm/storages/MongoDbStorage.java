@@ -1,12 +1,12 @@
 package gr.iti.mklab.sm.storages;
 
-import gr.iti.mklab.simmo.documents.Post;
-import gr.iti.mklab.simmo.morphia.DAOManager;
-import gr.iti.mklab.simmo.morphia.MorphiaManager;
-
 import java.io.IOException;
 
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.core.morphia.DAOManager;
+import gr.iti.mklab.simmo.core.morphia.MorphiaManager;
 import gr.iti.mklab.sm.Configuration;
+
 import org.apache.log4j.Logger;
 
 import com.mongodb.MongoException;

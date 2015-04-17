@@ -1,6 +1,6 @@
 package gr.iti.mklab.sm.retrievers;
 
-import gr.iti.mklab.simmo.documents.Post;
+import gr.iti.mklab.simmo.core.documents.Post;
 
 import java.util.ArrayList;
 import java.util.List;

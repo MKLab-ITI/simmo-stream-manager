@@ -10,10 +10,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.impl.posts.TwitterPost;
 import gr.iti.mklab.sm.Configuration;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.Feed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
+
 import org.apache.log4j.Logger;
 
 import twitter4j.FilterQuery;
@@ -28,8 +31,6 @@ import twitter4j.TwitterFactory;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.User;
 import twitter4j.conf.ConfigurationBuilder;
-import gr.iti.mklab.framework.abstractions.socialmedia.posts.TwitterPost;
-import gr.iti.mklab.simmo.documents.Post;
 import gr.iti.mklab.sm.streams.StreamException;
 import gr.iti.mklab.sm.subscribers.Subscriber;
 

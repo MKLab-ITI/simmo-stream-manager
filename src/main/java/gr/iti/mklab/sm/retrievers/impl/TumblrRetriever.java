@@ -10,15 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import gr.iti.mklab.framework.abstractions.socialmedia.posts.TumblrPost;
-import gr.iti.mklab.framework.abstractions.socialmedia.users.TumblrAccount;
-
+import gr.iti.mklab.simmo.core.UserAccount;
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.impl.posts.TumblrPost;
+import gr.iti.mklab.simmo.impl.users.TumblrAccount;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.GroupFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
+
 import org.apache.log4j.Logger;
 import org.scribe.exceptions.OAuthConnectionException;
 
@@ -26,8 +28,6 @@ import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.exceptions.JumblrException;
 import com.tumblr.jumblr.types.Blog;
 
-import gr.iti.mklab.simmo.UserAccount;
-import gr.iti.mklab.simmo.documents.Post;
 
 /**
  * Class responsible for retrieving Tumblr content based on keywords or tumblr users

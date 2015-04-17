@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import gr.iti.mklab.framework.abstractions.socialmedia.posts.InstagramPost;
-import gr.iti.mklab.framework.abstractions.socialmedia.users.InstagramAccount;
-
 import org.apache.log4j.Logger;
 import org.jinstagram.Instagram;
 import org.jinstagram.InstagramOembed;
@@ -22,14 +19,16 @@ import org.jinstagram.entity.users.feed.UserFeed;
 import org.jinstagram.entity.users.feed.UserFeedData;
 import org.jinstagram.auth.model.Token;
 
+import gr.iti.mklab.simmo.core.UserAccount;
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.impl.posts.InstagramPost;
+import gr.iti.mklab.simmo.impl.users.InstagramAccount;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.GroupFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
-import gr.iti.mklab.simmo.UserAccount;
-import gr.iti.mklab.simmo.documents.Post;
 
 /**
  * Class responsible for retrieving Instagram content based on keywords or instagram users or locations

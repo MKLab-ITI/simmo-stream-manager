@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import gr.iti.mklab.framework.abstractions.socialmedia.posts.FacebookPost;
-import gr.iti.mklab.framework.abstractions.socialmedia.users.FacebookAccount;
-
 import org.apache.log4j.Logger;
 
 import com.restfb.Connection;
@@ -20,14 +17,16 @@ import com.restfb.types.Comment;
 import com.restfb.types.Page;
 import com.restfb.types.User;
 
+import gr.iti.mklab.simmo.core.UserAccount;
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.impl.posts.FacebookPost;
+import gr.iti.mklab.simmo.impl.users.FacebookAccount;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.GroupFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
-import gr.iti.mklab.simmo.UserAccount;
-import gr.iti.mklab.simmo.documents.Post;
 
 /**
  * Class responsible for retrieving facebook content based on keywords or facebook users/facebook pages

@@ -1,7 +1,7 @@
 package gr.iti.mklab.sm.storages;
 
 
-import gr.iti.mklab.simmo.documents.Post;
+import gr.iti.mklab.simmo.core.documents.Post;
 
 import java.io.IOException;
 

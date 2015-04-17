@@ -1,10 +1,10 @@
 package gr.iti.mklab.sm.storages;
 
-import gr.iti.mklab.simmo.documents.Post;
-
 import java.io.IOException;
 
+import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
+
 import org.apache.commons.configuration.BaseConfiguration;
 
 import com.thinkaurelius.titan.core.TitanFactory;

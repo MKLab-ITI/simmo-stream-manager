@@ -1,11 +1,12 @@
 package gr.iti.mklab.sm.streams.impl;
 
+import gr.iti.mklab.simmo.impl.Sources;
 import gr.iti.mklab.sm.Configuration;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.retrievers.impl.TwitterRetriever;
+
 import org.apache.log4j.Logger;
 
-import gr.iti.mklab.framework.abstractions.socialmedia.Sources;
 import gr.iti.mklab.sm.streams.Stream;
 import gr.iti.mklab.sm.streams.StreamException;
 import gr.iti.mklab.sm.streams.monitors.RateLimitsMonitor;

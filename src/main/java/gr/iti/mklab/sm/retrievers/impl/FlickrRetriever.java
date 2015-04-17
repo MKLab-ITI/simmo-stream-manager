@@ -7,9 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import gr.iti.mklab.framework.abstractions.socialmedia.posts.FlickrPost;
-import gr.iti.mklab.framework.abstractions.socialmedia.users.FlickrAccount;
-
 import org.apache.log4j.Logger;
 
 import com.flickr4java.flickr.Flickr;
@@ -22,14 +19,17 @@ import com.flickr4java.flickr.photos.PhotoList;
 import com.flickr4java.flickr.photos.PhotosInterface;
 import com.flickr4java.flickr.photos.SearchParameters;
 
+import gr.iti.mklab.simmo.core.UserAccount;
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.impl.posts.FlickrPost;
+import gr.iti.mklab.simmo.impl.users.FlickrAccount;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.GroupFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
-import gr.iti.mklab.simmo.UserAccount;
-import gr.iti.mklab.simmo.documents.Post;
+
 
 /**
  * Class responsible for retrieving Flickr content based on keywords,users or location coordinates

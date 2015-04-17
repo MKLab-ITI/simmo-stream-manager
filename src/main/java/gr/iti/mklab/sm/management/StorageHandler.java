@@ -9,10 +9,11 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
+
 import org.apache.log4j.Logger;
 
-import gr.iti.mklab.simmo.documents.Post;
 import gr.iti.mklab.sm.storages.Storage;
 import gr.iti.mklab.sm.streams.StreamException;
 import gr.iti.mklab.sm.streams.StreamsManagerConfiguration;

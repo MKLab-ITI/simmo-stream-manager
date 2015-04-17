@@ -1,7 +1,6 @@
 package gr.iti.mklab.sm.filters;
 
-
-import gr.iti.mklab.simmo.documents.Post;
+import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 
 public abstract class ItemFilter {

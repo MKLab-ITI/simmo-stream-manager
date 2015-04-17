@@ -1,7 +1,6 @@
 package gr.iti.mklab.sm.retrievers;
 
-
-import gr.iti.mklab.simmo.UserAccount;
+import gr.iti.mklab.simmo.core.UserAccount;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.Feed;

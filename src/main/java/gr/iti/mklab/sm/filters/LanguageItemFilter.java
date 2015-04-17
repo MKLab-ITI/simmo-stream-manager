@@ -1,12 +1,11 @@
 package gr.iti.mklab.sm.filters;
 
-
-import gr.iti.mklab.simmo.documents.Post;
-
 import java.util.HashSet;
 import java.util.Set;
 
+import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
+
 import org.apache.log4j.Logger;
 
 

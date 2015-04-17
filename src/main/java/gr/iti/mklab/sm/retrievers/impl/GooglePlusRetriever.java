@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import gr.iti.mklab.framework.abstractions.socialmedia.posts.GooglePlusPost;
-import gr.iti.mklab.framework.abstractions.socialmedia.users.GooglePlusAccount;
 import org.apache.log4j.Logger;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -28,14 +26,16 @@ import com.google.api.services.plus.model.ActivityFeed;
 import com.google.api.services.plus.model.PeopleFeed;
 import com.google.api.services.plus.model.Person;
 
-import gr.iti.mklab.simmo.UserAccount;
+import gr.iti.mklab.simmo.core.UserAccount;
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.impl.posts.GooglePlusPost;
+import gr.iti.mklab.simmo.impl.users.GooglePlusAccount;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.GroupFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
-import gr.iti.mklab.simmo.documents.Post;
 
 /**
  * Class responsible for retrieving Google+ content based on keywords or google+ users
