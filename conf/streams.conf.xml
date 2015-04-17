@@ -10,7 +10,7 @@
    	<Storages>
     	<!-- Mongodb storage configuration  -->
       	<Storage id="Mongodb">
-        	<Parameter name="Classpath"><![CDATA[gr.iti.mklab.simmo.sfc.storages.MongoDbStorage]]></Parameter>
+        	<Parameter name="Classpath"><![CDATA[gr.iti.mklab.sm.storages.MongoDbStorage]]></Parameter>
          	<Parameter name="mongodb.host"><![CDATA[160.40.50.207]]></Parameter>
          	<Parameter name="mongodb.database"><![CDATA[BBC_Twitter]]></Parameter>
       	</Storage>
@@ -46,7 +46,7 @@
  	<Filters>
     	<!-- Filter that discards Items with short text -->
     	<Filter id="LengthFilter">
-       		<Parameter name="Classpath"><![CDATA[gr.iti.mklab.simmo.sfc.filters.LengthItemFilter]]></Parameter>
+       		<Parameter name="Classpath"><![CDATA[gr.iti.mklab.sm.filters.LengthItemFilter]]></Parameter>
          	<Parameter name="length"><![CDATA[10]]></Parameter>
       	</Filter>
    	</Filters>
@@ -92,8 +92,8 @@
    		<!-- Twitter Stream Handler -->
       	<Stream id="Twitter">
        		<Parameter name="Classpath">
-           		<![CDATA[gr.iti.mklab.simmo.sfc.streams.impl.TwitterStream]]>
-			</Parameter>
+                <![CDATA[gr.iti.mklab.sm.streams.impl.TwitterStream]]>
+            </Parameter>
          	<Parameter name="Key"><![CDATA[]]></Parameter>
          	<Parameter name="Secret"><![CDATA[]]></Parameter>
          	<Parameter name="AccessToken"><![CDATA[]]></Parameter>
