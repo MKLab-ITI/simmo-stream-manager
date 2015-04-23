@@ -144,10 +144,11 @@ public class StreamsManager implements Runnable {
 		}
 		
 		try {
-			for (Stream stream : streams.values()) {
-				logger.info("Close " + stream);
-				stream.close();
-			}
+            //CHANGE: Stop the monitor instead of looping through the streams and stopping them
+            //to interrupt all running threads
+			if (monitor!=null){
+                monitor.stop();
+            }
 			
 			if (storageHandler != null) {
 				storageHandler.stop();
