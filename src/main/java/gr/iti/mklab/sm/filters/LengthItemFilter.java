@@ -1,6 +1,6 @@
 package gr.iti.mklab.sm.filters;
 
-import java.util.List;
+import java.util.Set;
 
 import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
@@ -33,7 +33,7 @@ public class LengthItemFilter extends ItemFilter {
 		}
 		
 		try {
-			List<String> tags = post.getTags();
+			Set<String> tags = post.getTags();
 			if(tags != null) {
 				for(String tag : tags) {
 					title = title.replaceAll(tag, " ");
