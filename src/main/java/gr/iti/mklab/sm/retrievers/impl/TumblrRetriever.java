@@ -194,7 +194,7 @@ public class TumblrRetriever extends SocialMediaRetriever {
 				return response;
 			}
 			
-			if(posts == null || posts.isEmpty())
+			if(tumblrPosts == null || tumblrPosts.isEmpty())
 				break;
 			
 			numberOfRequests ++;
