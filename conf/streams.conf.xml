@@ -184,6 +184,14 @@
         	<Parameter name="timeWindow"><![CDATA[30]]></Parameter>	        
   		</Stream> 
       	-->
-      	
-	</Streams>
+        <!-- Google StreetView Stream Handler -->
+        <Stream id="StreetView">
+            <Parameter name="Classpath">
+                <![CDATA[gr.iti.mklab.sm.streams.impl.StreetViewStream]]>
+            </Parameter>
+            <Parameter name="Key"><![CDATA[]]></Parameter>
+            <Parameter name="timeWindow"><![CDATA[15]]></Parameter>
+            <Parameter name="maxRequests"><![CDATA[150]]></Parameter>
+        </Stream>
+    </Streams>
 </Configuration>

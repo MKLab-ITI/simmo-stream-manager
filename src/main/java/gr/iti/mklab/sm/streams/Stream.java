@@ -3,6 +3,7 @@ package gr.iti.mklab.sm.streams;
 import java.util.Date;
 
 import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.core.items.Image;
 import gr.iti.mklab.sm.Configuration;
 import gr.iti.mklab.sm.feeds.Feed;
 import gr.iti.mklab.sm.retrievers.Response;
@@ -98,6 +99,9 @@ public abstract class Stream {
 						}
 						handler.handle(item);
 					}
+                    for(Image item: response.getImages()){
+                        handler.handle(item);
+                    }
 					
 					// Set new since date 
 					feed.setSinceDate(sinceDate);
@@ -108,7 +112,8 @@ public abstract class Stream {
 				e.printStackTrace();
 			}
 			
-			logger.info("Retrieved items for " + getName() + " are : " + response.getNumberOfPosts());
+			logger.info("Retrieved posts for " + getName() + " are : " + response.getNumberOfPosts());
+            logger.info("Retrieved images for " + getName() + " are : " + response.getImages().size());
 		}
 		else {
 			throw new StreamException("Retriever is null for " + getName());

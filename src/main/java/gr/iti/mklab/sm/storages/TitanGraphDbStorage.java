@@ -64,7 +64,7 @@ public class TitanGraphDbStorage implements Storage {
 	}
 
 	@Override
-	public void store(Post post) throws IOException {
+	public void store(gr.iti.mklab.simmo.core.Object post) throws IOException {
 		
 		String userId = post.getContributor().getId();
 		String tweetId =  post.getId();

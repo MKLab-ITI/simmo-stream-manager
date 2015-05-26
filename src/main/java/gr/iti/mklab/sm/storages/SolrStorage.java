@@ -80,7 +80,7 @@ public class SolrStorage implements Storage {
 	}
 
 	@Override
-	public void store(Post post) throws IOException {
+	public void store(gr.iti.mklab.simmo.core.Object post) throws IOException {
 		
 		// Index only original Items and MediaItems come from original Items
 		/*

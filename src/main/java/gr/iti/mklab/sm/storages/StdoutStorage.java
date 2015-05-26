@@ -14,7 +14,7 @@ public class StdoutStorage implements Storage {
 	}
 
 	@Override
-	public void store(Post update) throws IOException {
+	public void store(gr.iti.mklab.simmo.core.Object update) throws IOException {
 		System.out.println(update.toString());	
 	}
 	

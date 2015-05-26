@@ -43,7 +43,7 @@ public class FlatFileStorage implements Storage {
 	}
 	
 	@Override
-	public void store(Post post) {
+	public void store(gr.iti.mklab.simmo.core.Object post) {
 		items++;
 		if (out != null) {
 			out.println(post.toString());

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import gr.iti.mklab.simmo.core.*;
 import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 
@@ -31,7 +32,7 @@ public class StorageHandler {
 	public final Logger logger = Logger.getLogger(StorageHandler.class);
 	
 	// Internal queue used as a buffer of incoming items 
-	private BlockingQueue<Post> queue = new LinkedBlockingDeque<Post>();
+	private BlockingQueue<gr.iti.mklab.simmo.core.Object> queue = new LinkedBlockingDeque<gr.iti.mklab.simmo.core.Object>();
 	
 	private int numberOfConsumers = 16;
 	private List<Consumer> consumers = new ArrayList<Consumer>(numberOfConsumers);
@@ -79,7 +80,7 @@ public class StorageHandler {
 		}
 	}
 
-	public void handle(Post item) {
+	public void handle(gr.iti.mklab.simmo.core.Object item) {
 		try {
 			queue.add(item);
 		}
@@ -88,8 +89,8 @@ public class StorageHandler {
 		}
 	}
 
-	public void handle(Post[] posts) {
-		for (Post item : posts) {
+	public void handle(gr.iti.mklab.simmo.core.Object[] posts) {
+		for (gr.iti.mklab.simmo.core.Object item : posts) {
 			handle(item);
 		}
 	}

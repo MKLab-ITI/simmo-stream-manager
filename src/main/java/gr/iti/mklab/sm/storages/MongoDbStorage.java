@@ -3,6 +3,8 @@ package gr.iti.mklab.sm.storages;
 import java.io.IOException;
 
 import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.core.items.Image;
+import gr.iti.mklab.simmo.core.items.Video;
 import gr.iti.mklab.simmo.core.morphia.DAOManager;
 import gr.iti.mklab.simmo.core.morphia.MorphiaManager;
 import gr.iti.mklab.sm.Configuration;
@@ -13,83 +15,84 @@ import com.mongodb.MongoException;
 
 /**
  * Class for storing items in mongo db
- * 
- * @author manosetro
- * @email  manosetro@iti.gr
  *
+ * @author manosetro
+ * @email manosetro@iti.gr
  */
 public class MongoDbStorage implements Storage {
 
-	private static String HOST = "mongodb.host";
-	private static String DB = "mongodb.database";
-	
-	private Logger logger = Logger.getLogger(MongoDbStorage.class);
-	
-	private String storageName = "Mongodb";
-	
-	private String host;
-	private String database;
-	
-	private DAOManager dao = null;
-	
-	public MongoDbStorage(Configuration config) {
-		this.host = config.getParameter(MongoDbStorage.HOST);
-		this.database = config.getParameter(MongoDbStorage.DB);
-	}
-	
-	@Override
-	public void close() {
-		
-	}
+    private static String HOST = "mongodb.host";
+    private static String DB = "mongodb.database";
 
-	@Override
-	public boolean delete(String id) throws IOException {
-		
-		return false;
-	}
-	
-	@Override
-	public boolean open() {
-		logger.info("Open MongoDB storage <host: " + host + ">");
-		if(database != null) {
-			try {
-				MorphiaManager.setup(host);
-				
-				dao = new DAOManager(database);	
-			} catch (Exception e) {
-				logger.error("MongoDB Storage failed to open!");
-				return false;
-			}
-		}
-		return true;
-	}
+    private Logger logger = Logger.getLogger(MongoDbStorage.class);
 
-	
-	@Override
-	public void store(Post post) {
-		try {
-			dao.savePost(post);	
-		}
-		catch(MongoException e) {
-			e.printStackTrace();
-			logger.error("Storing item " + post.getId() + " failed.");
-		}
-	
-	}
+    private String storageName = "Mongodb";
 
-	
-	@Override
-	public boolean checkStatus() {
-		return true;
-	}
-	
-	@Override
-	public String getStorageName() {
-		return this.storageName;
-	}
-	
+    private String host;
+    private String database;
+
+    private DAOManager dao = null;
+
+    public MongoDbStorage(Configuration config) {
+        this.host = config.getParameter(MongoDbStorage.HOST);
+        this.database = config.getParameter(MongoDbStorage.DB);
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public boolean delete(String id) throws IOException {
+
+        return false;
+    }
+
+    @Override
+    public boolean open() {
+        logger.info("Open MongoDB storage <host: " + host + ">");
+        if (database != null) {
+            try {
+                MorphiaManager.setup(host);
+
+                dao = new DAOManager(database);
+            } catch (Exception e) {
+                logger.error("MongoDB Storage failed to open!");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void store(gr.iti.mklab.simmo.core.Object object) throws IOException {
+        try {
+
+            if (object instanceof Image)
+                dao.imageDAO.save((Image) object);
+            else if (object instanceof Video)
+                dao.videoDAO.save((Video) object);
+            else
+                dao.savePost((Post) object);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            logger.error("Storing item " + object.getId() + " failed.");
+        }
+    }
+
+    @Override
+    public boolean checkStatus() {
+        return true;
+    }
+
+    @Override
+    public String getStorageName() {
+        return this.storageName;
+    }
+
 	/*
-	private class UpdaterTask extends Thread {
+    private class UpdaterTask extends Thread {
 
 		private long timeout = 10 * 60 * 1000;
 		private boolean stop = true;
@@ -182,5 +185,5 @@ public class MongoDbStorage implements Storage {
 		
 	}
 	*/
-	
+
 }
