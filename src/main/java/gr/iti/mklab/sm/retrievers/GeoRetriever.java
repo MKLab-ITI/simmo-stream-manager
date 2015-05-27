@@ -12,6 +12,8 @@ import gr.iti.mklab.sm.feeds.*;
  */
 public abstract class GeoRetriever implements Retriever {
 
+    public GeoRetriever(){}
+
     public GeoRetriever(Credentials credentials) {
     }
 

@@ -39,7 +39,7 @@ public class StreetViewRetriever extends GeoRetriever {
     }
 
     @Override
-    public Response retrieveGeoFeed(GeoFeed feed, Integer maxRequests)  {
+    public Response retrieveGeoFeed(GeoFeed feed, Integer maxRequests) {
         Response response = new Response();
         List<Image> images = new ArrayList<>();
         int count = 0;
@@ -60,6 +60,7 @@ public class StreetViewRetriever extends GeoRetriever {
                     // This is to avoid empty images containing just a text "no image available"
                     if (connection.getContentLength() > MINIMUM_CONTENT_LENGTH) {
                         Image img = new Image();
+                        img.setId(Sources.GOOGLE_STREETVIEW + '#' + myUrl.hashCode());
                         img.setUrl(myUrl.toString());
                         img.setSource(Sources.GOOGLE_STREETVIEW);
                         img.setWidth(640);

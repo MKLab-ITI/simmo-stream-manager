@@ -25,7 +25,7 @@ public class StreetViewStream extends Stream {
 
     @Override
     public void close() throws StreamException {
-        logger.info("#YouTube : Close stream");
+        logger.info("#StreetView : Close stream");
     }
 
     @Override
