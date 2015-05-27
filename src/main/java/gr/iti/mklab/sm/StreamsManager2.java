@@ -88,8 +88,8 @@ public class StreamsManager2 implements Runnable {
             storageHandler.start();
             logger.info("Storage Manager is ready to store.");
 
-            addKeywordFeeds(keywords);
-            //addGeoFeed();
+            //addKeywordFeeds(keywords);
+            addGeoFeed();
 
             Map<String, Set<Feed>> feedsPerSource = createFeedsPerSource(feeds);
 
@@ -237,8 +237,8 @@ public class StreamsManager2 implements Runnable {
         double lon2 = 2.394619;
         double density = 0.02;
         GeoFeed feed = new GeoFeed(lon1, lat1, lon2, lat2, density);
-        feed.setId("StreetView#1");
-        feed.setSource("StreetView");
+        feed.setId("Panoramio#1");
+        feed.setSource("Panoramio");
         feeds.add(feed);
     }
 
@@ -281,7 +281,7 @@ public class StreamsManager2 implements Runnable {
 
         File streamConfigFile;
         if (args.length != 1) {
-            streamConfigFile = new File("/home/kandreadou/mklab/streams.conf.xml");
+            streamConfigFile = new File("/home/kandreadou/mklab/streams.geo.xml");
         } else {
             streamConfigFile = new File(args[0]);
         }

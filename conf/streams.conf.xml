@@ -193,5 +193,13 @@
             <Parameter name="timeWindow"><![CDATA[15]]></Parameter>
             <Parameter name="maxRequests"><![CDATA[150]]></Parameter>
         </Stream>
+        <!-- Panoramio Stream Handler -->
+        <Stream id="Panoramio">
+            <Parameter name="Classpath">
+                <![CDATA[gr.iti.mklab.sm.streams.impl.PanoramioStream]]>
+            </Parameter>
+            <Parameter name="timeWindow"><![CDATA[15]]></Parameter>
+            <Parameter name="maxRequests"><![CDATA[150]]></Parameter>
+        </Stream>
     </Streams>
 </Configuration>

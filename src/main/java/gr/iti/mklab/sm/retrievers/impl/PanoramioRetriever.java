@@ -26,7 +26,8 @@ import java.util.List;
  */
 public class PanoramioRetriever extends GeoRetriever {
 
-
+    /** The maximum number of photos one can retrieve in one query as per API definition */
+    private static final int MAX_PHOTOS_PER_QUERY = 100;
     static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
@@ -44,23 +45,27 @@ public class PanoramioRetriever extends GeoRetriever {
 
     @Override
     public Response retrieveGeoFeed(GeoFeed feed, Integer maxRequests) {
+        int current = 0;
         Response res = new Response();
         List<Image> resultArray = new ArrayList<>();
-        String req = "http://www.panoramio.com/map/get_panoramas.php?set=public&from=0&to=20&minx=%f&miny=%f&maxx=%f&maxy=%f&size=medium&mapfilter=true";
-        GenericUrl requestUrl = new GenericUrl(String.format(req, feed.get_lat_min(), feed.get_lon_min(), feed.get_lon_max(), feed.get_lat_max()));
+        while (current < maxRequests) {
+            String req = "http://www.panoramio.com/map/get_panoramas.php?set=public&from=%d&to=%d&minx=%f&miny=%f&maxx=%f&maxy=%f&size=medium&mapfilter=true";
+            GenericUrl requestUrl = new GenericUrl(String.format(req, current, current + MAX_PHOTOS_PER_QUERY, feed.get_lat_min(), feed.get_lon_min(), feed.get_lon_max(), feed.get_lat_max()));
 
-        HttpRequest request;
-        try {
-            System.out.println(requestUrl.toString());
-            request = requestFactory.buildGetRequest(requestUrl);
-            HttpResponse response = request.execute();
-            PanoramioContainer result = response.parseAs(PanoramioContainer.class);
-            if (result != null) {
-                for (PanoramioImage.PanoramioItem item : result.photos)
-                    resultArray.add(new PanoramioImage(item));
+            HttpRequest request;
+            try {
+                System.out.println(requestUrl.toString());
+                request = requestFactory.buildGetRequest(requestUrl);
+                HttpResponse response = request.execute();
+                PanoramioContainer result = response.parseAs(PanoramioContainer.class);
+                if (result != null) {
+                    for (PanoramioImage.PanoramioItem item : result.photos)
+                        resultArray.add(new PanoramioImage(item));
+                }
+            } catch (Exception e) {
+                System.out.println(e);
             }
-        } catch (Exception e) {
-            System.out.println(e);
+            current += MAX_PHOTOS_PER_QUERY;
         }
         res.setImages(resultArray);
         return res;
