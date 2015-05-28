@@ -54,7 +54,7 @@ public class PanoramioRetriever extends GeoRetriever {
 
             HttpRequest request;
             try {
-                System.out.println(requestUrl.toString());
+                //System.out.println(requestUrl.toString());
                 request = requestFactory.buildGetRequest(requestUrl);
                 HttpResponse response = request.execute();
                 PanoramioContainer result = response.parseAs(PanoramioContainer.class);

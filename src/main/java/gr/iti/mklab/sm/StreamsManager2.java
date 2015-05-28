@@ -60,13 +60,22 @@ public class StreamsManager2 implements Runnable {
         initStreams();
     }
 
+    public synchronized void open(Set<String> keywords) throws StreamException {
+        open(keywords, 0, 0, 0, 0, false);
+    }
+
+    public synchronized void open(double lon_min, double lat_min, double lon_max, double lat_max) throws StreamException {
+        open(null, lon_min, lat_min, lon_max, lat_max, true);
+    }
+
+
     /**
      * Opens Manager by starting the auxiliary modules and setting up
      * the database for reading/storing
      *
      * @throws StreamException
      */
-    public synchronized void open(Set<String> keywords) throws StreamException {
+    private void open(Set<String> keywords, double lon_min, double lat_min, double lon_max, double lat_max, boolean isGeo) throws StreamException {
 
         if (state == ManagerState.OPEN) {
             return;
@@ -88,8 +97,10 @@ public class StreamsManager2 implements Runnable {
             storageHandler.start();
             logger.info("Storage Manager is ready to store.");
 
-            //addKeywordFeeds(keywords);
-            addGeoFeed();
+            if (isGeo)
+                addGeoFeeds(lon_min, lat_min, lon_max, lat_max);
+            else
+                addKeywordFeeds(keywords);
 
             Map<String, Set<Feed>> feedsPerSource = createFeedsPerSource(feeds);
 
@@ -229,17 +240,17 @@ public class StreamsManager2 implements Runnable {
         return feedsPerSource;
     }
 
-    private void addGeoFeed() {
+    private void addGeoFeeds(double lon_min, double lat_min, double lon_max, double lat_max) {
 
-        double lat1 = 48.837379;
-        double lon1 = 2.282352;
-        double lat2 = 48.891358;
-        double lon2 = 2.394619;
-        double density = 0.02;
-        GeoFeed feed = new GeoFeed(lon1, lat1, lon2, lat2, density);
-        feed.setId("Panoramio#1");
-        feed.setSource("Panoramio");
-        feeds.add(feed);
+        double density = Math.abs((lon_max - lon_min) / 100);
+        GeoFeed streetview = new GeoFeed(lon_min, lat_min, lon_max, lat_max, density);
+        streetview.setId("StreetView#1");
+        streetview.setSource("StreetView");
+        feeds.add(streetview);
+        GeoFeed panoramio = new GeoFeed(lon_min, lat_min, lon_max, lat_max);
+        panoramio.setId("Panoramio#1");
+        panoramio.setSource("Panoramio");
+        feeds.add(panoramio);
     }
 
     private void addKeywordFeeds(Set<String> keywords) {
@@ -279,29 +290,27 @@ public class StreamsManager2 implements Runnable {
 
     public static void main(String[] args) throws Exception {
 
-        File streamConfigFile;
-        if (args.length != 1) {
-            streamConfigFile = new File("/home/kandreadou/mklab/streams.geo.xml");
-        } else {
-            streamConfigFile = new File(args[0]);
-        }
+        boolean isGeo = true;
+        double lat1 = 48.837379;
+        double lon1 = 2.282352;
+        double lat2 = 48.891358;
+        double lon2 = 2.394619;
+        Set<String> set = new HashSet<String>();
+        set.add("snowden");
+        set.add("assange");
 
-        StreamsManager2 manager = null;
+        File streamConfigFile = new File(isGeo ? "/home/kandreadou/mklab/streams.geo.xml" : "/home/kandreadou/mklab/streams.conf.xml");
         try {
             StreamsManagerConfiguration config = StreamsManagerConfiguration.readFromFile(streamConfigFile);
-            //config.getStorageConfig("Mongodb").setParameter("mongodb.database", dbname);
 
-            Set<String> set = new HashSet<String>();
-            set.add("snowden");
-            set.add("assange");
-            manager = new StreamsManager2(config);
-            manager.open(set);
-
-            //Runtime.getRuntime().addShutdownHook(new Shutdown(manager));
+            StreamsManager2 manager = new StreamsManager2(config);
+            if (isGeo)
+                manager.open(lon1, lat1, lon2, lat2);
+            else
+                manager.open(set);
 
             Thread thread = new Thread(manager);
             thread.start();
-
 
         } catch (ParserConfigurationException e) {
             System.out.println(e);

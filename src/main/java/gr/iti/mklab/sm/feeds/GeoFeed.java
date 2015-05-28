@@ -27,6 +27,13 @@ public class GeoFeed extends Feed {
         _density = density;
     }
 
+    public GeoFeed(double lon_min, double lat_min, double lon_max, double lat_max) {
+        _lon_min = lon_min;
+        _lat_min = lat_min;
+        _lon_max = lon_max;
+        _lat_max = lat_max;
+    }
+
     public double get_lon_min() {
         return _lon_min;
     }

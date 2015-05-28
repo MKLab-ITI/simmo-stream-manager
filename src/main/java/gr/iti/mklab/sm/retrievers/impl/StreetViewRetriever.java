@@ -54,7 +54,7 @@ public class StreetViewRetriever extends GeoRetriever {
                     bd = new BigDecimal(y);
                     bd = bd.setScale(6, BigDecimal.ROUND_HALF_UP);
                     double lon = bd.doubleValue();
-                    System.out.println("trying for " + lat + " " + lon);
+                    //System.out.println("Getting streetview image for " + lat + " " + lon);
                     URL myUrl = new URL("http://maps.googleapis.com/maps/api/streetview?size=640x640&location=" + lat + "," + lon + "&sensor=false&key=" + key);
                     URLConnection connection = myUrl.openConnection();
                     // This is to avoid empty images containing just a text "no image available"
