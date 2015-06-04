@@ -243,16 +243,16 @@ public class StreamsManager2 implements Runnable {
     private void addGeoFeeds(double lon_min, double lat_min, double lon_max, double lat_max) {
 
         double density = Math.abs((lon_max - lon_min) / 100);
-        /*GeoFeed streetview = new GeoFeed(lon_min, lat_min, lon_max, lat_max, density);
+        GeoFeed streetview = new GeoFeed(lon_min, lat_min, lon_max, lat_max, density);
         streetview.setId("StreetView#1");
         streetview.setSource("StreetView");
         feeds.add(streetview);
         GeoFeed panoramio = new GeoFeed(lon_min, lat_min, lon_max, lat_max);
         panoramio.setId("Panoramio#1");
         panoramio.setSource("Panoramio");
-        feeds.add(panoramio);*/
+        feeds.add(panoramio);
         GeoFeed wikimapia = new GeoFeed(lon_min, lat_min, lon_max, lat_max);
-        wikimapia.setId("wikimapia#1");
+        wikimapia.setId("Wikimapia#1");
         wikimapia.setSource("Wikimapia");
         feeds.add(wikimapia);
     }

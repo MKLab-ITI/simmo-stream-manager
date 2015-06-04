@@ -63,37 +63,58 @@ public class WikiMapiaRetriever extends GeoRetriever {
         Response res = new Response();
         List<Image> resultArray = new ArrayList<>();
         while (page < maxRequests && current <= found) {
-            String req = "http://api.wikimapia.org/?key=%s&function=place.search&lat=%f&lon=%f&format=json&data_blocks=photos,location&page=%d&count=%d&distance=%d";
-            GenericUrl requestUrl = new GenericUrl(String.format(req, "example", feed.get_lat_min(), feed.get_lon_min(), page, MAX_RESULTS_PER_QUERY, 1000));
+            String req = "http://api.wikimapia.org/?key=%s&function=place.getbyarea&coordsby=bbox&bbox==%f,%f,%f,%f&format=json&data_blocks=photos,location&page=%d&count=%d";
+            GenericUrl requestUrl = new GenericUrl(String.format(req, key, feed.get_lon_min(), feed.get_lat_min(), feed.get_lon_max(), feed.get_lat_max(), page, MAX_RESULTS_PER_QUERY));
+            logger.info(requestUrl.toString());
             HttpRequest request;
             try {
                 request = requestFactory.buildGetRequest(requestUrl);
                 HttpResponse response = request.execute();
                 WikiMapiaContainer result = response.parseAs(WikiMapiaContainer.class);
+                if (result == null)
+                    continue;
                 found = result.found;
-                if (result != null) {
-                    for (WikiMapiaContainer.Place place : result.places)
-                        for (WikiMapiaContainer.Place.Photo photo : place.photos) {
-                            Image im = new Image();
-                            im.setId(Sources.WIKIMAPIA + '#' + place.id + '#' + photo.id);
-                            im.setCrawlDate(new Date());
-                            im.setSource(Sources.WIKIMAPIA);
-                            im.setUrl(photo.big_url);
-                            im.setThumbnail(photo.thumbnail_url);
+                if (result.places == null)
+                    continue;
+                for (WikiMapiaContainer.Place place : result.places)
+                    for (WikiMapiaContainer.Place.Photo photo : place.photos) {
+                        //logger.info(photo.big_url);
+                        Image im = new Image();
+                        im.setId(Sources.WIKIMAPIA + '#' + place.id + '#' + photo.id);
+                        im.setCrawlDate(new Date());
+                        im.setSource(Sources.WIKIMAPIA);
+                        im.setUrl(photo.big_url);
+                        im.setThumbnail(photo.thumbnail_url);
+                        if (place.description != null)
                             im.setDescription(place.description);
-                            im.setTitle(place.wikipedia);
-                            im.setLocation(new Location(place.location.lat, place.location.lon));
+                        if (place.title != null)
+                            im.setTitle(place.title);
+                        if (place.wikipedia != null)
+                            im.setWebPageUrl(place.wikipedia);
+                        if (place.location != null) {
+                            Location loc = new Location(place.location.lat, place.location.lon);
+                            loc.setCountry(place.location.country);
+                            loc.setCity(place.location.place);
+                            if (place.location.street != null) {
+                                if (place.location.housenumber == null)
+                                    loc.setAdress(place.location.street);
+                                else
+                                    loc.setAdress(place.location.street + " " + place.location.housenumber);
+                            }
+                            im.setLocation(loc);
+                        }
+                        if (place.tags != null) {
                             for (WikiMapiaContainer.Place.Tag tag : place.tags)
                                 im.addTag(tag.title);
-                            resultArray.add(im);
                         }
-                }
+                        resultArray.add(im);
+                    }
+
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e + " " + e.getMessage());
             }
             page++;
             current += MAX_RESULTS_PER_QUERY;
-
         }
         res.setImages(resultArray);
         return res;
@@ -114,7 +135,7 @@ public class WikiMapiaRetriever extends GeoRetriever {
             @Key
             public Tag[] tags;
             @Key
-            public String description, wikipedia;
+            public String description, wikipedia, title;
             @Key
             public Photo[] photos;
             @Key
@@ -142,6 +163,8 @@ public class WikiMapiaRetriever extends GeoRetriever {
             public static class Location {
                 @Key
                 public double lat, lon;
+                @Key
+                public String country, state, place, street, housenumber;
             }
         }
     }

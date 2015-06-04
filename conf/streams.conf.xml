@@ -201,5 +201,13 @@
             <Parameter name="timeWindow"><![CDATA[15]]></Parameter>
             <Parameter name="maxRequests"><![CDATA[150]]></Parameter>
         </Stream>
+        <Stream id="Wikimapia">
+            <Parameter name="Classpath">
+                <![CDATA[gr.iti.mklab.sm.streams.impl.WikiMapiaStream]]>
+            </Parameter>
+            <Parameter name="Key"><![CDATA[]]></Parameter>
+            <Parameter name="timeWindow"><![CDATA[5]]></Parameter>
+            <Parameter name="maxRequests"><![CDATA[100]]></Parameter>
+        </Stream>
     </Streams>
 </Configuration>
