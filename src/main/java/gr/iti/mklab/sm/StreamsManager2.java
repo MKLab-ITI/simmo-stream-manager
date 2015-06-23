@@ -260,13 +260,12 @@ public class StreamsManager2 implements Runnable {
     private void addKeywordFeeds(Set<String> keywords) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);
-        /*KeywordsFeed feed = new KeywordsFeed();
+        KeywordsFeed feed = new KeywordsFeed();
         feed.addKeywords(new ArrayList(keywords));
         feed.setId("Twitter#1");
         feed.setSinceDate(cal.getTime());
         feed.setSource("Twitter");
         feeds.add(feed);
-
         KeywordsFeed flickr = new KeywordsFeed();
         flickr.addKeywords(new ArrayList(keywords));
         flickr.setId("Flickr#1");
@@ -284,8 +283,7 @@ public class StreamsManager2 implements Runnable {
         tumblr.setId("Tumblr#1");
         tumblr.setSinceDate(cal.getTime());
         tumblr.setSource("Tumblr");
-        feeds.add(tumblr);*/
-
+        feeds.add(tumblr);
         KeywordsFeed youtube = new KeywordsFeed();
         youtube.addKeywords(new ArrayList(keywords));
         youtube.setId("Youtube#1");
