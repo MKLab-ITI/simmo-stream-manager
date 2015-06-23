@@ -2,6 +2,7 @@ package gr.iti.mklab.sm.retrievers;
 
 import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.simmo.core.items.Image;
+import gr.iti.mklab.simmo.core.items.Media;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public class Response {
 	
 	private List<Post> items = new ArrayList<Post>();
-    private List<Image> images = new ArrayList<>();
+    private List<Media> media = new ArrayList<>();
 
 	private int requests = 0;
 	
@@ -33,11 +34,11 @@ public class Response {
 		this.requests = requests;
 	}
 
-    public void setImages(List<Image> images) {
-        this.images.addAll(images);
+    public void setMedia(List<? extends Media> newmedia) {
+        this.media.addAll(newmedia);
     }
 
-    public List<Image> getImages() {
-        return images;
+    public List<Media> getMedia() {
+        return media;
     }
 }

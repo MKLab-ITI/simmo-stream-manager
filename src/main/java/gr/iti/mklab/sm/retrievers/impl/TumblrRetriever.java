@@ -215,7 +215,7 @@ public class TumblrRetriever extends SocialMediaRetriever {
 						return response;
 					}
 					
-					if(publicationDate.after(lastItemDate) && post != null && post.getId() != null){
+					if(post != null && post.getId() != null){
 						//Get the blog
 						String blogName = post.getBlogName();
 						Blog blog = client.blogInfo(blogName);
@@ -233,7 +233,6 @@ public class TumblrRetriever extends SocialMediaRetriever {
 						if(tumblrItem != null){
 							posts.add(tumblrItem);
 						}
-						
 					}
 				
 				}

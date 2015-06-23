@@ -69,10 +69,14 @@ public class MongoDbStorage implements Storage {
     public void store(gr.iti.mklab.simmo.core.Object object) throws IOException {
         try {
 
-            if (object instanceof Image)
+            if (object instanceof Image) {
+                dao.userDAO.save(object.getContributor());
                 dao.imageDAO.save((Image) object);
-            else if (object instanceof Video)
+
+            } else if (object instanceof Video){
+                dao.userDAO.save(object.getContributor());
                 dao.videoDAO.save((Video) object);
+            }
             else
                 dao.savePost((Post) object);
         } catch (MongoException e) {

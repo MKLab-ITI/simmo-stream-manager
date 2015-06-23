@@ -67,7 +67,7 @@ public class PanoramioRetriever extends GeoRetriever {
             }
             current += MAX_PHOTOS_PER_QUERY;
         }
-        res.setImages(resultArray);
+        res.setMedia(resultArray);
         return res;
     }
 

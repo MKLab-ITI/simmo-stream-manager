@@ -116,7 +116,7 @@ public class WikiMapiaRetriever extends GeoRetriever {
             page++;
             current += MAX_RESULTS_PER_QUERY;
         }
-        res.setImages(resultArray);
+        res.setMedia(resultArray);
         return res;
     }
 

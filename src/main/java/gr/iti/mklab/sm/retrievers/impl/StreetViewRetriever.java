@@ -82,7 +82,7 @@ public class StreetViewRetriever extends GeoRetriever {
                 }
             }
         }
-        response.setImages(images);
+        response.setMedia(images);
         return response;
     }
 }

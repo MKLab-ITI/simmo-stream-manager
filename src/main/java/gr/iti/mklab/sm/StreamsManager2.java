@@ -258,20 +258,15 @@ public class StreamsManager2 implements Runnable {
     }
 
     private void addKeywordFeeds(Set<String> keywords) {
-        KeywordsFeed feed = new KeywordsFeed();
-        feed.addKeywords(new ArrayList(keywords));
-        feed.setId("Twitter#1");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);
+        /*KeywordsFeed feed = new KeywordsFeed();
+        feed.addKeywords(new ArrayList(keywords));
+        feed.setId("Twitter#1");
         feed.setSinceDate(cal.getTime());
         feed.setSource("Twitter");
         feeds.add(feed);
-        KeywordsFeed youtube = new KeywordsFeed();
-        youtube.addKeywords(new ArrayList(keywords));
-        youtube.setId("Youtube#1");
-        youtube.setSinceDate(cal.getTime());
-        youtube.setSource("YouTube");
-        feeds.add(youtube);
+
         KeywordsFeed flickr = new KeywordsFeed();
         flickr.addKeywords(new ArrayList(keywords));
         flickr.setId("Flickr#1");
@@ -289,19 +284,26 @@ public class StreamsManager2 implements Runnable {
         tumblr.setId("Tumblr#1");
         tumblr.setSinceDate(cal.getTime());
         tumblr.setSource("Tumblr");
-        feeds.add(tumblr);
+        feeds.add(tumblr);*/
+
+        KeywordsFeed youtube = new KeywordsFeed();
+        youtube.addKeywords(new ArrayList(keywords));
+        youtube.setId("Youtube#1");
+        youtube.setSinceDate(cal.getTime());
+        youtube.setSource("YouTube");
+        feeds.add(youtube);
     }
 
     public static void main(String[] args) throws Exception {
 
-        boolean isGeo = true;
+        boolean isGeo = false;
         double lat1 = 48.837379;
         double lon1 = 2.282352;
         double lat2 = 48.891358;
         double lon2 = 2.394619;
         Set<String> set = new HashSet<String>();
-        set.add("snowden");
-        set.add("assange");
+        set.add("summer");
+        set.add("see");
 
         File streamConfigFile = new File(isGeo ? "/home/kandreadou/mklab/streams.geo.xml" : "/home/kandreadou/mklab/streams.conf.xml");
         try {

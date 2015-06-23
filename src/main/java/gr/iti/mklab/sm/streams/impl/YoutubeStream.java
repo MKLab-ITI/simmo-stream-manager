@@ -3,8 +3,8 @@ package gr.iti.mklab.sm.streams.impl;
 import gr.iti.mklab.simmo.impl.Sources;
 import gr.iti.mklab.sm.Configuration;
 import gr.iti.mklab.sm.Credentials;
-import gr.iti.mklab.sm.retrievers.impl.YoutubeRetriever;
 
+import gr.iti.mklab.sm.retrievers.impl.YouTubeRetriever;
 import org.apache.log4j.Logger;
 
 import gr.iti.mklab.sm.streams.Stream;
@@ -58,7 +58,7 @@ public class YoutubeStream extends Stream {
 		
 		rateLimitsMonitor = new RateLimitsMonitor(maxRequests, timeWindow);
 		try {
-			retriever = new YoutubeRetriever(credentials);
+			retriever = new YouTubeRetriever(credentials);
 		} catch (Exception e) {
 			throw new StreamException(e);
 		}

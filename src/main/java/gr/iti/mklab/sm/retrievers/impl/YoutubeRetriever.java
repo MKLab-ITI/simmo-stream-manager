@@ -41,7 +41,10 @@ import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
  * The retrieval process takes place through Google API
  *
  * @author ailiakop
+ * @deprecated because it uses the YouTube Data API v2, which is obsolete
+ * use {@link gr.iti.mklab.sm.retrievers.impl.YouTubeRetriever} instead
  */
+@Deprecated
 public class YoutubeRetriever extends SocialMediaRetriever {
 
     private final String activityFeedUserUrlPrefix = "http://gdata.youtube.com/feeds/api/users/";
@@ -225,7 +228,7 @@ public class YoutubeRetriever extends SocialMediaRetriever {
 
                         YoutubePost ytItem = new YoutubePost(video);
                         //ytItem.setList(label);
-						
+
 						/*UserAccount tempStreamUser = ytItem.getContributor();
 						if(tempStreamUser != null) {
                             UserAccount user = this.getStreamUser(tempStreamUser);
@@ -246,13 +249,11 @@ public class YoutubeRetriever extends SocialMediaRetriever {
                 e.printStackTrace();
                 logger.error("YouTube Retriever error during retrieval of " + tags);
                 logger.error("Exception: " + e.getMessage());
-
                 break;
             }
 
             if (isFinished)
                 break;
-
         }
 
         if (loggingEnabled) {
