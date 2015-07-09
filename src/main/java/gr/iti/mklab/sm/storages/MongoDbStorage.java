@@ -40,7 +40,7 @@ public class MongoDbStorage implements Storage {
 
     @Override
     public void close() {
-
+        MorphiaManager.tearDown();
     }
 
     @Override
@@ -72,7 +72,6 @@ public class MongoDbStorage implements Storage {
             if (object instanceof Image) {
                 dao.userDAO.save(object.getContributor());
                 dao.imageDAO.save((Image) object);
-
             } else if (object instanceof Video){
                 dao.userDAO.save(object.getContributor());
                 dao.videoDAO.save((Video) object);

@@ -220,10 +220,10 @@ public class TumblrRetriever extends SocialMediaRetriever {
 						String blogName = post.getBlogName();
 						Blog blog = client.blogInfo(blogName);
 						TumblrAccount tumblrStreamUser = new TumblrAccount(blog);
-						
 						TumblrPost tumblrItem = null;
 						try {
 							tumblrItem = new TumblrPost(post, tumblrStreamUser);
+                            tumblrItem.setLabel(feed.getLabel());
 						} catch (MalformedURLException e) {
 							response.setRequests(numberOfRequests);
 							response.setPosts(posts);

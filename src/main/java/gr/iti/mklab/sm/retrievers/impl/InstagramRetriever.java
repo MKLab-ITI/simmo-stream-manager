@@ -116,7 +116,7 @@ public class InstagramRetriever extends SocialMediaRetriever {
 						
 						if(mfeed != null && mfeed.getId() != null) {
 							InstagramPost instagramItem = new InstagramPost(mfeed);
-							//instagramItem.setList(label);
+                            instagramItem.setLabel(label);
 								
 							posts.add(instagramItem);
 						}
@@ -213,7 +213,7 @@ public class InstagramRetriever extends SocialMediaRetriever {
 					InstagramPost instagramItem;
 					try {
 						instagramItem = new InstagramPost(mfeed);
-						//instagramItem.setList(label);
+                        instagramItem.setLabel(label);
 						
 					} catch (MalformedURLException e) {
 						logger.error("Instagram retriever exception: " + e.getMessage());
@@ -249,7 +249,7 @@ public class InstagramRetriever extends SocialMediaRetriever {
 								
 								if(mfeed != null && mfeed.getId() != null){
 									InstagramPost instagramItem = new InstagramPost(mfeed);
-									//instagramItem.setList(label);
+                                    instagramItem.setLabel(label);
 									
 									posts.add(instagramItem);
 								}

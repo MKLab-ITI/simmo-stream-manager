@@ -133,7 +133,8 @@ public class StreamsMonitor implements Runnable {
 	 */
 	public void stop() {
 		isFinished = true;
-		executor.shutdown();
+        // Don't do this gracefully with shutdown(). Often it never really shuts down
+		executor.shutdownNow();
 		
         while (!executor.isTerminated()) {
         	try {

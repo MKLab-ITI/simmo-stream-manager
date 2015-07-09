@@ -148,7 +148,9 @@ public class YouTubeRetriever extends SocialMediaRetriever {
             VideoListResponse videoListResponse = videoSearch.execute();
             numRequests+=videoListResponse.size();
             for (Video v : videoListResponse.getItems()) {
-                videos.add(new YoutubeVideo(v, users.get(v.getSnippet().getChannelId())));
+                YoutubeVideo yv = new YoutubeVideo(v, users.get(v.getSnippet().getChannelId()));
+                yv.setLabel(feed.getLabel());
+                videos.add(yv);
             }
 
         }

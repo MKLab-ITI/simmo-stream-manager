@@ -260,35 +260,42 @@ public class StreamsManager2 implements Runnable {
     private void addKeywordFeeds(Set<String> keywords) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);
-        KeywordsFeed feed = new KeywordsFeed();
-        feed.addKeywords(new ArrayList(keywords));
-        feed.setId("Twitter#1");
-        feed.setSinceDate(cal.getTime());
-        feed.setSource("Twitter");
-        feeds.add(feed);
         KeywordsFeed flickr = new KeywordsFeed();
         flickr.addKeywords(new ArrayList(keywords));
         flickr.setId("Flickr#1");
         flickr.setSinceDate(cal.getTime());
         flickr.setSource("Flickr");
+        flickr.setLabel("tFlickr");
         feeds.add(flickr);
+
+        KeywordsFeed feed = new KeywordsFeed();
+        feed.addKeywords(new ArrayList(keywords));
+        feed.setId("Twitter#1");
+        feed.setSinceDate(cal.getTime());
+        feed.setSource("Twitter");
+        feed.setLabel("tTwitter");
+        feeds.add(feed);
+
         KeywordsFeed instagram = new KeywordsFeed();
         instagram.addKeywords(new ArrayList(keywords));
         instagram.setId("Instagram#1");
         instagram.setSinceDate(cal.getTime());
         instagram.setSource("Instagram");
+        instagram.setLabel("tInstagram");
         feeds.add(instagram);
         KeywordsFeed tumblr = new KeywordsFeed();
         tumblr.addKeywords(new ArrayList(keywords));
         tumblr.setId("Tumblr#1");
         tumblr.setSinceDate(cal.getTime());
         tumblr.setSource("Tumblr");
+        tumblr.setLabel("tTumblr");
         feeds.add(tumblr);
         KeywordsFeed youtube = new KeywordsFeed();
         youtube.addKeywords(new ArrayList(keywords));
         youtube.setId("Youtube#1");
         youtube.setSinceDate(cal.getTime());
         youtube.setSource("YouTube");
+        youtube.setLabel("tYoutube");
         feeds.add(youtube);
     }
 
@@ -300,8 +307,8 @@ public class StreamsManager2 implements Runnable {
         double lat2 = 48.891358;
         double lon2 = 2.394619;
         Set<String> set = new HashSet<String>();
-        set.add("summer");
-        set.add("see");
+        set.add("strauss kahn");
+       // set.add("see");
 
         File streamConfigFile = new File(isGeo ? "/home/kandreadou/mklab/streams.geo.xml" : "/home/kandreadou/mklab/streams.conf.xml");
         try {

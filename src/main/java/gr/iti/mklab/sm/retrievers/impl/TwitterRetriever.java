@@ -121,7 +121,7 @@ public class TwitterRetriever extends SocialMediaRetriever {
 						}
 						
 						TwitterPost post = new TwitterPost(status);
-						
+						post.setLabel(feedLabel);
 						posts.add(post);
 					}
 				}
@@ -216,7 +216,7 @@ public class TwitterRetriever extends SocialMediaRetriever {
 						}
 						
 						TwitterPost post = new TwitterPost(status);
-						
+						post.setLabel(feedLabel);
 						posts.add(post);
 					}
 				}

@@ -215,6 +215,7 @@ public class FlickrRetriever extends SocialMediaRetriever {
 				}
 
 				FlickrPost flickrItem = new FlickrPost(photo);
+                flickrItem.setLabel(feed.getLabel());
 				//flickrItem.setList(label);
 				
 				items.add(flickrItem);
