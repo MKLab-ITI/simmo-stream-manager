@@ -151,7 +151,6 @@ public class StreamsMonitor implements Runnable {
 	public void run() {
 		Map<String, Future<Integer>> responses = new HashMap<String, Future<Integer>>();
 		while(!isFinished) {
-			
 			for(String streamId : streamsFetchTasks.keySet()) {
 				StreamFetchTask task = streamsFetchTasks.get(streamId);
 				

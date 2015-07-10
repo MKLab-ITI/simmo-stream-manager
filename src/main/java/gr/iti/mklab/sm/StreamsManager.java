@@ -260,6 +260,14 @@ public class StreamsManager implements Runnable {
 			
 		}
 	}
+
+    public String addFeed(Feed feed){
+        return feedsCreator.addFeed(feed);
+    }
+
+    public String deleteFeed(String id){
+        return feedsCreator.deleteFeed(id);
+    }
 	
 	public static void main(String[] args) {
 		
@@ -267,7 +275,7 @@ public class StreamsManager implements Runnable {
 		
 		File streamConfigFile;
 		if(args.length != 1 ) {
-			streamConfigFile = new File("./conf/streams.conf.xml");
+			streamConfigFile = new File("/home/kandreadou/mklab/streams.conf.xml");
 		}
 		else {
 			streamConfigFile = new File(args[0]);

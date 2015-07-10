@@ -4,7 +4,7 @@
   	<groupId>gr.iti.mklab</groupId>
   	<artifactId>simmo-stream-manager</artifactId>
   	<version>0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>simmo-stream-manager</name>
     <url>https://github.com/MKLab-ITI/simmo-stream-manager</url>
@@ -40,9 +40,31 @@
     
   	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.version>4.1.0.RELEASE</spring.version>
     </properties>
     
     <dependencies>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 		<!-- SIMMO -->
         <dependency>
     		<groupId>gr.iti.mklab</groupId>
