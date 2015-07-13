@@ -199,7 +199,7 @@
                 <![CDATA[gr.iti.mklab.sm.streams.impl.PanoramioStream]]>
             </Parameter>
             <Parameter name="timeWindow"><![CDATA[15]]></Parameter>
-            <Parameter name="maxRequests"><![CDATA[150]]></Parameter>
+            <Parameter name="maxRequests"><![CDATA[1000]]></Parameter>
         </Stream>
         <Stream id="Wikimapia">
             <Parameter name="Classpath">

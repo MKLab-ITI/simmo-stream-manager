@@ -64,10 +64,12 @@ public class MongoDBSplitStorage implements Storage {
         try {
             DAOManager dao = DAOManagerFactory.getDAOManager(object.getLabel());
             if (object instanceof Image) {
-                dao.userDAO.save(object.getContributor());
+                if (object.getContributor() != null)
+                    dao.userDAO.save(object.getContributor());
                 dao.imageDAO.save((Image) object);
             } else if (object instanceof Video) {
-                dao.userDAO.save(object.getContributor());
+                if (object.getContributor() != null)
+                    dao.userDAO.save(object.getContributor());
                 dao.videoDAO.save((Video) object);
             } else
                 dao.savePost((Post) object);

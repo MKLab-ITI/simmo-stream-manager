@@ -59,8 +59,12 @@ public class PanoramioRetriever extends GeoRetriever {
                 HttpResponse response = request.execute();
                 PanoramioContainer result = response.parseAs(PanoramioContainer.class);
                 if (result != null) {
-                    for (PanoramioImage.PanoramioItem item : result.photos)
-                        resultArray.add(new PanoramioImage(item));
+                    for (PanoramioImage.PanoramioItem item : result.photos){
+                        PanoramioImage pi = new PanoramioImage(item);
+                        pi.setLabel(feed.getLabel());
+                        resultArray.add(pi);
+                    }
+
                 }
             } catch (Exception e) {
                 System.out.println(e);

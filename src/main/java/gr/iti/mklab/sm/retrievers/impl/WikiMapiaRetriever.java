@@ -85,6 +85,7 @@ public class WikiMapiaRetriever extends GeoRetriever {
                         im.setSource(Sources.WIKIMAPIA);
                         im.setUrl(photo.big_url);
                         im.setThumbnail(photo.thumbnail_url);
+                        im.setLabel(feed.getLabel());
                         if (place.description != null)
                             im.setDescription(place.description);
                         if (place.title != null)

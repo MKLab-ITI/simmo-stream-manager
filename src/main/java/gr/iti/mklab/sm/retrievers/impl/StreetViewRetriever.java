@@ -66,6 +66,7 @@ public class StreetViewRetriever extends GeoRetriever {
                         img.setWidth(640);
                         img.setHeight(640);
                         img.setLocation(new Location(lat, lon));
+                        img.setLabel(feed.getLabel());
                         images.add(img);
                         //BufferedImage image = ImageIO.read(myUrl);
                         //ImageIO.write(image, "JPEG", new File(imageFolder + lat + lon + ".jpg"));

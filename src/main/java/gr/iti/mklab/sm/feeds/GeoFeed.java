@@ -11,6 +11,7 @@ public class GeoFeed extends Feed {
 
     private double _lon_min, _lat_min, _lon_max, _lat_max, _density;
 
+    public GeoFeed(){}
     /**
      * A GeoFeed constructor
      *
@@ -53,6 +54,5 @@ public class GeoFeed extends Feed {
     public double get_density() {
         return _density;
     }
-
 
 }

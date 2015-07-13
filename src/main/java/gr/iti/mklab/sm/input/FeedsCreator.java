@@ -43,7 +43,9 @@ public class FeedsCreator {
         this.db = config.getParameter(DB);
 
         MongoClient mongoClient = new MongoClient(host);
-        feedsDao = new BasicDAO<Feed, String>(Feed.class, mongoClient, morphia, db);
+        feedsDao = new BasicDAO<>(Feed.class, mongoClient, morphia, db);
+        // ensure capped collections
+        feedsDao.getDatastore().ensureCaps();
     }
 
     public Map<String, Set<Feed>> createFeedsPerSource() {
