@@ -228,7 +228,7 @@ public class StreamsManager implements Runnable {
 					if(monitor != null) {
 						Stream stream = monitor.getStream(streamId);
 						if(stream != null) { 
-							monitor.addFeed(streamId, feed);
+							monitor.removeFeed(streamId, feed);
 						}
 						else {
 							logger.error("Stream " + streamId + " has not initialized");
