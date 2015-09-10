@@ -6,7 +6,7 @@ import org.mongodb.morphia.annotations.CappedAt;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
-@Entity(value="feeds", noClassnameStored=false, cap=@CappedAt(count=50))
+@Entity(value="feeds", noClassnameStored=false)
 public class Feed {
 
 	@Id

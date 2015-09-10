@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
   	<groupId>gr.iti.mklab</groupId>
   	<artifactId>simmo-stream-manager</artifactId>
-  	<version>0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+  	<version>0.3.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
 	<name>simmo-stream-manager</name>
     <url>https://github.com/MKLab-ITI/simmo-stream-manager</url>
@@ -69,7 +69,7 @@
         <dependency>
     		<groupId>gr.iti.mklab</groupId>
     		<artifactId>simmo</artifactId>
-    		<version>0.3-SNAPSHOT</version>
+    		<version>0.4.2-SNAPSHOT</version>
     	</dependency>
     	<dependency>
     		<groupId>redis.clients</groupId>

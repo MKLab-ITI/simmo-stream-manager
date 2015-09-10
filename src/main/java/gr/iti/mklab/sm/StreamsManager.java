@@ -275,7 +275,7 @@ public class StreamsManager implements Runnable {
 		
 		File streamConfigFile;
 		if(args.length != 1 ) {
-			streamConfigFile = new File("/home/kandreadou/mklab/streams.conf.xml");
+			streamConfigFile = new File("/home/iti-310/vdata/streams.conf.xml");
 		}
 		else {
 			streamConfigFile = new File(args[0]);

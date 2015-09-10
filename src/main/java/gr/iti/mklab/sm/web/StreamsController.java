@@ -37,7 +37,7 @@ public class StreamsController {
     private StreamsManager manager;
 
     public StreamsController() throws StreamException, IOException, SAXException, ParserConfigurationException {
-        File streamConfigFile = new File("/home/kandreadou/mklab/streams.conf.xml");
+        File streamConfigFile = new File("/home/iti-310/vdata/streams.conf.xml");
         StreamsManagerConfiguration config = StreamsManagerConfiguration.readFromFile(streamConfigFile);
         manager = new StreamsManager(config);
         manager.open();
