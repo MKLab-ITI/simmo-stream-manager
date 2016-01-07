@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
   	<groupId>gr.iti.mklab</groupId>
   	<artifactId>simmo-stream-manager</artifactId>
-  	<version>0.3.4-SNAPSHOT</version>
+  	<version>0.3.5-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>simmo-stream-manager</name>
@@ -69,7 +69,7 @@
         <dependency>
     		<groupId>gr.iti.mklab</groupId>
     		<artifactId>simmo</artifactId>
-    		<version>0.4.4-SNAPSHOT</version>
+    		<version>0.4.5-SNAPSHOT</version>
     	</dependency>
     	<dependency>
     		<groupId>redis.clients</groupId>
