@@ -1,6 +1,10 @@
 package gr.iti.mklab.sm.retrievers;
 
+import java.util.List;
+
 import gr.iti.mklab.simmo.core.UserAccount;
+import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.core.items.Media;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.Feed;
@@ -99,6 +103,23 @@ public abstract class SocialMediaRetriever implements Retriever {
 		
 		
 		return new Response();
+	}
+
+	public Response getResponse(List<Post> posts, List<Media> media, int requests) {
+		Response response = new Response();
+		response.setPosts(posts);
+		response.setMedia(media);
+		response.setRequests(requests);
+		
+		long lastTimestamp = 0l;
+		for(Post post : posts) {
+			if(lastTimestamp < post.getCreationDate().getTime()) {
+				lastTimestamp = post.getCreationDate().getTime();
+			}
+		}
+		response.setLastTimestamp(lastTimestamp);
+		
+		return response;
 	}
 	
 }

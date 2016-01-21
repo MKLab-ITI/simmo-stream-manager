@@ -12,9 +12,7 @@ import gr.iti.mklab.sm.storages.Storage;
  * Class for storing items to databases
  *
  * @author manosetro
- * @author ailiakop
  * @email manosetro@iti.gr
- * @email ailiakop@iti.gr
  */
 public class Consumer extends Thread {
 
@@ -23,6 +21,7 @@ public class Consumer extends Thread {
     private static int id = 0;
 
     private boolean isAlive = true;
+    
     private List<Storage> storages = null;
 
     private BlockingQueue<gr.iti.mklab.simmo.core.Object> queue;
@@ -72,7 +71,9 @@ public class Consumer extends Thread {
     private void process(gr.iti.mklab.simmo.core.Object post) throws IOException {
         if (storages != null) {
             for (Storage storage : storages) {
-                storage.store(post);
+            	synchronized(storage) {
+            		storage.store(post);
+            	}
             }
         }
     }
@@ -97,6 +98,7 @@ public class Consumer extends Thread {
             post = queue.take();
         } catch (InterruptedException e) {
             _logger.error(e);
+            return null;
         }
         return post;
     }

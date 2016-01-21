@@ -3,14 +3,10 @@ package gr.iti.mklab.sm.management;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import gr.iti.mklab.simmo.core.*;
-import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 
 import org.apache.log4j.Logger;
@@ -39,9 +35,7 @@ public class StorageHandler {
 	
 	private List<Storage> storages = new ArrayList<Storage>();
 	
-	private Map<String, Boolean> workingStatus = new HashMap<String, Boolean>();
-	
-	enum StorageHandlerState {
+	public enum StorageHandlerState {
 		OPEN, CLOSE
 	}
 	
@@ -49,16 +43,12 @@ public class StorageHandler {
 	
 	public StorageHandler(StreamsManagerConfiguration config) {
 		try {	
+			initializeStorageHandler(config);	
 			state = StorageHandlerState.OPEN;
 			
-			initializeStorageHandler(config);	
 		} catch (StreamException e) {
 			logger.error("Error during storage handler initialization: " + e.getMessage());
 		}
-		
-		//this.statusThread = new StorageStatusThread(this);	
-		//this.statusThread.start();
-		
 	}
 	
 	public StorageHandlerState getState() {
@@ -119,14 +109,10 @@ public class StorageHandler {
 				String storageClass = storageConfig.getParameter(Configuration.CLASS_PATH);
 				Constructor<?> constructor = Class.forName(storageClass).getConstructor(Configuration.class);
 				Storage storageInstance = (Storage) constructor.newInstance(storageConfig);
-				storages.add(storageInstance);
-				
 				if(storageInstance.open()) {
-					workingStatus.put(storageId, true);
+					storages.add(storageInstance);
 				}
-				else {
-					workingStatus.put(storageId, false);	
-				}
+		
 			} catch (Exception e) {
 				throw new StreamException("Error during storage initialization", e);
 			}
@@ -140,6 +126,7 @@ public class StorageHandler {
 		for(Consumer consumer : consumers) {
 			consumer.die();
 		}
+		
 		for(Storage storage : storages) {
 			storage.close();
 		}

@@ -1,15 +1,17 @@
 package gr.iti.mklab.sm.input;
 
-
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.mongodb.WriteResult;
 import gr.iti.mklab.sm.Configuration;
 import gr.iti.mklab.sm.feeds.Feed;
+import gr.iti.mklab.sm.feeds.KeywordsFeed;
+
+import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.QueryResults;
@@ -81,8 +83,27 @@ public class FeedsCreator {
         return feedsDao.deleteById(id).toString();
     }
 
-    public static void main(String... args) {
-
+    public Object saveFeed(Feed feed) {
+    	Key<Feed> result = feedsDao.save(feed);
+    	return result.getId();
+    }
+    
+    public static void main(String... args) throws Exception {
+    	
+    	Configuration conf = new Configuration();
+    	conf.setParameter(HOST, "160.40.50.207");
+    	conf.setParameter(DB, "reveal_test");	
+    	
+		FeedsCreator fc = new FeedsCreator(conf);
+    	
+    	Feed feed = new KeywordsFeed(
+    			"GooglePlus#[syria crisis]", 
+    			"syria crisis", 
+    			new Date(System.currentTimeMillis() - 214400000L));
+    	
+    	feed.setSource("GooglePlus");
+    	
+    	fc.saveFeed(feed);
     }
 
 }

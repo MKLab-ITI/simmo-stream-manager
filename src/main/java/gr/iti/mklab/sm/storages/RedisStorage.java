@@ -2,7 +2,6 @@ package gr.iti.mklab.sm.storages;
 
 import java.io.IOException;
 
-import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 
 import org.apache.log4j.Logger;
@@ -34,6 +33,8 @@ public class RedisStorage implements Storage {
 	private long items = 0, mItems = 0, wPages = 0;
 	
 	private String storageName = "Redis";
+
+	private JedisPool jedisPool;
 	
 	public RedisStorage(Configuration config) {
 		this.host = config.getParameter(RedisStorage.HOST);
@@ -44,7 +45,7 @@ public class RedisStorage implements Storage {
 	public boolean open() {
 		try {
 			JedisPoolConfig poolConfig = new JedisPoolConfig();
-			JedisPool jedisPool = new JedisPool(poolConfig, host, 6379, 0);
+			this.jedisPool = new JedisPool(poolConfig, host, 6379, 0);
 		
 			this.jedis = jedisPool.getResource();
 			return true;
@@ -78,6 +79,7 @@ public class RedisStorage implements Storage {
 	@Override
 	public void close() {
 		jedis.disconnect();
+		jedisPool.close();
 	}
 	
 	@Override
@@ -117,7 +119,7 @@ public class RedisStorage implements Storage {
 		try {
 			synchronized(jedis) {
 				JedisPoolConfig poolConfig = new JedisPoolConfig();
-        		JedisPool jedisPool = new JedisPool(poolConfig, host, 6379, 0);
+        		jedisPool = new JedisPool(poolConfig, host, 6379, 0);
         	
         		this.jedis = jedisPool.getResource();
         		jedis.info();

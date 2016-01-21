@@ -2,7 +2,6 @@ package gr.iti.mklab.sm.feeds;
 
 import java.util.Date;
 
-import org.mongodb.morphia.annotations.CappedAt;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 

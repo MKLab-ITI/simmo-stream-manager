@@ -11,14 +11,8 @@ import gr.iti.mklab.sm.streams.StreamException;
 import gr.iti.mklab.sm.streams.StreamsManagerConfiguration;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
-import org.mongodb.morphia.dao.DAO;
-import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.ModelAndViewContainer;
 import org.xml.sax.SAXException;
 
 import javax.annotation.PreDestroy;
@@ -37,10 +31,13 @@ public class StreamsController {
     private StreamsManager manager;
 
     public StreamsController() throws StreamException, IOException, SAXException, ParserConfigurationException {
-        File streamConfigFile = new File("/home/iti-310/vdata/streams.conf.xml");
+        
+    	File streamConfigFile = new File("/home/iti-310/vdata/streams.conf.xml");
         StreamsManagerConfiguration config = StreamsManagerConfiguration.readFromFile(streamConfigFile);
+        
         manager = new StreamsManager(config);
         manager.open();
+        
         Thread thread = new Thread(manager);
         thread.start();
     }
@@ -86,7 +83,7 @@ public class StreamsController {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);
         KeywordsFeed flickr = new KeywordsFeed();
-        flickr.addKeywords(new ArrayList(keywords));
+        flickr.addKeywords(new ArrayList<String>(keywords));
         flickr.setId("Flickr#1");
         flickr.setSinceDate(cal.getTime());
         flickr.setSource("Flickr");
@@ -98,7 +95,7 @@ public class StreamsController {
         double lon1 = 2.282352;
         double lat2 = 48.891358;
         double lon2 = 2.394619;
-        GeoFeed panoramio = new GeoFeed(2.282352, 48.837379, 2.394619, 48.891358);
+        GeoFeed panoramio = new GeoFeed(lon1, lat1, lon2, lat2);
         panoramio.setId("Panoramio#1");
         panoramio.setSource("Panoramio");
         panoramio.setLabel("tPanoramio");

@@ -3,6 +3,7 @@ package gr.iti.mklab.sm.storages;
 import java.io.IOException;
 
 import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.core.documents.Webpage;
 import gr.iti.mklab.simmo.core.items.Image;
 import gr.iti.mklab.simmo.core.items.Video;
 import gr.iti.mklab.simmo.core.morphia.DAOManager;
@@ -72,12 +73,16 @@ public class MongoDbStorage implements Storage {
             if (object instanceof Image) {
                 dao.userDAO.save(object.getContributor());
                 dao.imageDAO.save((Image) object);
-            } else if (object instanceof Video){
+            } else if (object instanceof Video){ 
                 dao.userDAO.save(object.getContributor());
                 dao.videoDAO.save((Video) object);
             }
-            else
+            else if (object instanceof Webpage) {
+            	dao.saveWebpage((Webpage) object);
+            }
+            else {
                 dao.savePost((Post) object);
+            }
         } catch (MongoException e) {
             e.printStackTrace();
             logger.error("Storing item " + object.getId() + " failed.");

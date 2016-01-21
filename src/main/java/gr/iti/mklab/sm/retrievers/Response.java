@@ -1,7 +1,6 @@
 package gr.iti.mklab.sm.retrievers;
 
 import gr.iti.mklab.simmo.core.documents.Post;
-import gr.iti.mklab.simmo.core.items.Image;
 import gr.iti.mklab.simmo.core.items.Media;
 
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ public class Response {
     private List<Media> media = new ArrayList<>();
 
 	private int requests = 0;
+	private long lastTimestamp = 0l;
 	
 	public void setPosts(List<Post> items) {
 		this.items.addAll(items);
@@ -41,4 +41,12 @@ public class Response {
     public List<Media> getMedia() {
         return media;
     }
+
+	public long getLastTimestamp() {
+		return lastTimestamp;
+	}
+
+	public void setLastTimestamp(long lastTimestamp) {
+		this.lastTimestamp = lastTimestamp;
+	}
 }

@@ -2,7 +2,6 @@ package gr.iti.mklab.sm;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,6 +10,7 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 
 import gr.iti.mklab.sm.feeds.Feed;
+
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -20,7 +20,6 @@ import gr.iti.mklab.sm.streams.Stream;
 import gr.iti.mklab.sm.streams.StreamException;
 import gr.iti.mklab.sm.streams.StreamsManagerConfiguration;
 import gr.iti.mklab.sm.streams.monitors.StreamsMonitor;
-import gr.iti.mklab.sm.subscribers.Subscriber;
 
 /**
  * Class for retrieving content according to  keywords - user - location feeds from social networks.
@@ -32,14 +31,15 @@ import gr.iti.mklab.sm.subscribers.Subscriber;
  */
 public class StreamsManager implements Runnable {
 	
+	private static Thread thread;
+
 	public final Logger logger = Logger.getLogger(StreamsManager.class);
 	
-	enum ManagerState {
+	public enum ManagerState {
 		OPEN, CLOSE
 	}
 
 	private Map<String, Stream> streams = null;
-	private Map<String, Subscriber> subscribers = null;
 	
 	private StreamsManagerConfiguration config = null;
 	private StorageHandler storageHandler;
@@ -47,6 +47,10 @@ public class StreamsManager implements Runnable {
 	private StreamsMonitor monitor;
 	
 	private ManagerState state = ManagerState.CLOSE;
+
+	public ManagerState getState() {
+		return state;
+	}
 
 	private FeedsCreator feedsCreator;
 	private Set<Feed> feeds = new HashSet<Feed>();
@@ -59,9 +63,6 @@ public class StreamsManager implements Runnable {
 		
 		//Set the configuration files
 		this.config = config;
-		
-		//Set up the Subscribers
-		initSubscribers();
 		
 		//Set up the Streams
 		initStreams();
@@ -97,24 +98,11 @@ public class StreamsManager implements Runnable {
 			logger.info("Storage Manager is ready to store.");
 			
 			feedsCreator = new FeedsCreator(config.getInputConfig());
-			Map<String, Set<Feed>> feedsPerSource =  feedsCreator.createFeedsPerSource();
-			
-			//Start the Subscribers
-			for(String subscriberId : subscribers.keySet()) {
-				logger.info("Stream Manager - Start Subscriber : " + subscriberId);
-				Configuration srconfig = config.getSubscriberConfig(subscriberId);
-				Subscriber subscriber = subscribers.get(subscriberId);
-				
-				subscriber.setHandler(storageHandler);
-				subscriber.open(srconfig);
-				
-				Set<Feed> sourceFeed = feedsPerSource.get(subscriberId);
-				subscriber.subscribe(sourceFeed);
-			}
 			
 			//Start the Streams
 			for (String streamId : streams.keySet()) {
 				logger.info("Start Stream : " + streamId);
+				
 				Configuration sconfig = config.getStreamConfig(streamId);
 				Stream stream = streams.get(streamId);
 				stream.setHandler(storageHandler);
@@ -146,7 +134,7 @@ public class StreamsManager implements Runnable {
 		try {
             //CHANGE: Stop the monitor instead of looping through the streams and stopping them
             //to interrupt all running threads
-			if (monitor!=null){
+			if (monitor != null) {
                 monitor.stop();
             }
 			
@@ -154,6 +142,7 @@ public class StreamsManager implements Runnable {
 				storageHandler.stop();
 			}
 			
+			thread.interrupt();
 			state = ManagerState.CLOSE;
 		}
 		catch(Exception e) {
@@ -177,26 +166,6 @@ public class StreamsManager implements Runnable {
 		}catch(Exception e) {
 			e.printStackTrace();
 			throw new StreamException("Error during streams initialization", e);
-		}
-	}
-	
-	/**
-	 * Initializes the streams apis, that implement subscriber channels, that are going to be searched for 
-	 * relevant content
-	 * @throws StreamException
-	 */
-	private void initSubscribers() throws StreamException {
-		subscribers = new HashMap<String, Subscriber>();
-		try {
-			for (String subscriberId : config.getSubscriberIds()) {
-				Configuration sconfig = config.getSubscriberConfig(subscriberId);
-				Subscriber subscriber = (Subscriber) Class.forName(sconfig.getParameter(Configuration.CLASS_PATH)).newInstance();
-				subscribers.put(subscriberId, subscriber);
-			}
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			throw new StreamException("Error during Subscribers initialization", e);
 		}
 	}
 
@@ -261,11 +230,11 @@ public class StreamsManager implements Runnable {
 		}
 	}
 
-    public String addFeed(Feed feed){
+    public String addFeed(Feed feed) {
         return feedsCreator.addFeed(feed);
     }
-
-    public String deleteFeed(String id){
+    
+    public String deleteFeed(String id) {
         return feedsCreator.deleteFeed(id);
     }
 	
@@ -275,7 +244,7 @@ public class StreamsManager implements Runnable {
 		
 		File streamConfigFile;
 		if(args.length != 1 ) {
-			streamConfigFile = new File("/home/iti-310/vdata/streams.conf.xml");
+			streamConfigFile = new File("./conf/streams.conf.xml");
 		}
 		else {
 			streamConfigFile = new File(args[0]);
@@ -289,11 +258,10 @@ public class StreamsManager implements Runnable {
 			manager = new StreamsManager(config);
 			manager.open();
 			
-			Runtime.getRuntime().addShutdownHook(new Shutdown(manager));
-			
-			Thread thread = new Thread(manager);
+			thread = new Thread(manager);
 			thread.start();
 			
+			Runtime.getRuntime().addShutdownHook(new Shutdown(manager));
 			
 		} catch (ParserConfigurationException e) {
 			logger.error(e.getMessage());

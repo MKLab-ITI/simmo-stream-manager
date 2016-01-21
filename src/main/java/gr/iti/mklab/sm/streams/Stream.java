@@ -3,7 +3,6 @@ package gr.iti.mklab.sm.streams;
 import java.util.Date;
 
 import gr.iti.mklab.simmo.core.documents.Post;
-import gr.iti.mklab.simmo.core.items.Image;
 import gr.iti.mklab.simmo.core.items.Media;
 import gr.iti.mklab.sm.Configuration;
 import gr.iti.mklab.sm.feeds.Feed;
@@ -122,52 +121,6 @@ public abstract class Stream {
 		
 		return response;
 	}
-	
-	/**
-	 * Adds a feed to the stream for future searching
-	 * @param feed
-	 * @return
-	 *
-	public boolean addFeed(Feed feed) {
-		if(feedsQueue == null) {
-			return false;
-		}
-		
-		return feedsQueue.offer(feed);
-	}
-	*/
-	
-	/**
-	 * Adds a set of feeds to the stream for future searching
-	 * @param feeds
-	 * @return
-	 
-	public boolean addFeeds(List<Feed> feeds) {
-		for(Feed feed : feeds) {
-			if(!addFeed(feed)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	*/
-	
-	/*
-	@Override
-	public void run() {
-		while(true) {
-			try {
-				Feed feed = feedsQueue.take();
-				monitor.addFeed(feed);
-				monitor.startMonitor(feed);
-				
-			} catch (InterruptedException e) {
-				logger.error(e);
-				return;
-			}
-		}
-	}
-	*/
 	
 	public abstract String getName();
 

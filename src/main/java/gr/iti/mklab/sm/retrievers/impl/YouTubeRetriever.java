@@ -1,32 +1,36 @@
 package gr.iti.mklab.sm.retrievers.impl;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.Joiner;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.*;
+
 import gr.iti.mklab.simmo.core.UserAccount;
 import gr.iti.mklab.simmo.core.documents.Post;
+import gr.iti.mklab.simmo.core.items.Media;
 import gr.iti.mklab.simmo.impl.media.YoutubeVideo;
-import gr.iti.mklab.simmo.impl.posts.YoutubePost;
-import gr.iti.mklab.simmo.impl.users.YoutubeAccount;
-import gr.iti.mklab.simmo.impl.users.YoutubeChannel;
 import gr.iti.mklab.sm.Credentials;
 import gr.iti.mklab.sm.feeds.AccountFeed;
 import gr.iti.mklab.sm.feeds.GroupFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.retrievers.Response;
 import gr.iti.mklab.sm.retrievers.SocialMediaRetriever;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Class responsible for retrieving YouTube content based on keywords and YouTube users
@@ -50,9 +54,10 @@ public class YouTubeRetriever extends SocialMediaRetriever {
      */
     private static final Logger logger = Logger.getLogger(YouTubeRetriever.class);
 
-    private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
+    private static final long NUMBER_OF_RESULTS_RETURNED = 20;
+    
     private YouTube youtube;
-    private final String API_KEY;
+    private final String apiKey;
 
     public YouTubeRetriever(Credentials credentials) throws Exception {
         super(credentials);
@@ -61,100 +66,138 @@ public class YouTubeRetriever extends SocialMediaRetriever {
             logger.error("YouTube requires authentication.");
             throw new Exception("YouTube requires authentication.");
         }
-        API_KEY = credentials.getKey();
+        apiKey = credentials.getKey();
 
-        youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
-            public void initialize(HttpRequest request) throws IOException {
-            }
-        }).setApplicationName(credentials.getClientId()).build();
-
+        youtube = new YouTube.Builder(
+        		HTTP_TRANSPORT, 
+        		JSON_FACTORY, 
+        		new HttpRequestInitializer() {
+        			public void initialize(HttpRequest request) throws IOException {
+        			
+        			}
+        		}
+        	).setApplicationName(credentials.getClientId()).build();
     }
 
     @Override
     public Response retrieveKeywordsFeed(KeywordsFeed feed, Integer maxRequests) throws Exception {
 
         // The total number of requests, summing up search, channel list, video list
-        int numRequests = 0;
-        // The total number of results, as returned by the search response
-        int totalResults = 0;
-        // The toal number of results of the search requests
-        int resultsCounter = 0;
-        String nextPageToken = null;
+        int numberOfRequests = 0;
+
+        Date sinceDate = feed.getSinceDate();
+        String label = feed.getLabel();
+        
         Response response = new Response();
-        List<YoutubeVideo> videos = new ArrayList<>();
-
+        List<Post> posts = new ArrayList<Post>();
+        List<Media> media = new ArrayList<Media>();
+        
+		// Define the API request for retrieving search results.
+        YouTube.Search.List search = youtube.search()
+        		.list("id");
+        search.setKey(apiKey);
+        
         List<String> keywords = feed.getKeywords();
+		if(keywords == null || keywords.isEmpty()) {
+			logger.error("#Youtube : No keywords feed");
+			response = getResponse(posts, media, numberOfRequests);
+			return response;
+		}
+		
+		String textQuery = StringUtils.join(keywords, " OR ");
+		if(textQuery.equals("")) {
+			logger.error("Text Query is empty.");
+			response = getResponse(posts, media, numberOfRequests);
+			return response;
+		}
+        search.setQ(textQuery);
+        search.setType("video");
+        search.setMaxResults(NUMBER_OF_RESULTS_RETURNED);
+        search.setOrder("date");
+        
+        Set<String> uids = new HashSet<String>();
+        boolean sinceDateReached = false;
+        String nextPageToken = null;
+        while(true) {
+        	try {
+        		if(nextPageToken != null) {
+        			search.setPageToken(nextPageToken);
+        		}
+        	
+        		SearchListResponse searchResponse = search.execute();
+        		numberOfRequests++;
 
-        if (keywords == null || keywords.isEmpty()) {
-            logger.error("#YouTube : No keywords feed");
-            return response;
+        		List<SearchResult> searchResultList = searchResponse.getItems();
+        		if (searchResultList != null) {
+    			 
+        			List<String> videoIds = new ArrayList<String>();
+        			for (SearchResult searchResult : searchResultList) {         			
+        				if(searchResult.getId().getVideoId() != null) {
+        					videoIds.add(searchResult.getId().getVideoId());
+        				}
+        			}
+        			Joiner stringJoiner = Joiner.on(',');
+        			String videoId = stringJoiner.join(videoIds);
+        			logger.info("Videos: " + videoId);
+        			
+        			YouTube.Videos.List listVideosRequest = youtube.videos().list("snippet,statistics,recordingDetails,player");
+        			listVideosRequest.setId(videoId);
+        			listVideosRequest.setMaxResults(NUMBER_OF_RESULTS_RETURNED);
+        			listVideosRequest.setKey(apiKey);
+
+        			VideoListResponse listResponse = listVideosRequest.execute();
+        			numberOfRequests++;
+            
+        			List<Video> videoList = listResponse.getItems();
+        			if (videoList != null) {
+        				for(Video video : videoList) {
+        					uids.add(video.getSnippet().getChannelId());
+            			
+        					YoutubeVideo yv = new YoutubeVideo(video);
+        					if(yv.getCreationDate().before(sinceDate)) {
+        						sinceDateReached = true;
+        						break;
+        					}
+            			
+        					if(label != null) {
+        						yv.addLabel(label);
+        					}
+        					
+        					media.add(yv);
+        				}
+        			}
+        		}
+
+        		nextPageToken = searchResponse.getNextPageToken();
+        		if(nextPageToken == null) {
+        			logger.info("Stop retriever. There is no more pages to fetch for query " + textQuery);
+        			break;
+        		}
+        		
+        	} catch (GoogleJsonResponseException e) {
+				logger.error("There was a service error: " + e.getDetails().getCode() + " : " + e.getDetails().getMessage(), e);
+				break;
+			} catch (IOException e) {
+				logger.error("There was an IO error: " + e.getCause() + " : " + e.getMessage(), e);
+				break;
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error(e);
+				break;
+			}
+        	
+        	if(numberOfRequests >= maxRequests) {
+        		logger.info("Stop retriever. Number of requests (" + numberOfRequests + ") has reached for " + textQuery);
+				break;
+			}
+        	
+			if(sinceDateReached) {
+				logger.info("Stop retriever. Since date " + sinceDate + " reached for query " + textQuery);
+				break;
+			}
         }
-
-        String tags = "";
-        for (String key : keywords) {
-            String[] words = key.split(" ");
-            for (String word : words) {
-                if (!tags.contains(word) && word.length() > 1)
-                    tags += word.toLowerCase() + " ";
-            }
-        }
-
-        //one call - 25 results
-        if (tags.equals(""))
-            return response;
-
-        while (numRequests <= maxRequests && resultsCounter<=totalResults) {
-            // Define the API request for retrieving search results.
-            YouTube.Search.List search = youtube.search().list("id,snippet");
-            search.setKey(API_KEY);
-            search.setQ(tags);
-
-            // Restrict the search results to only include videos. See:
-            // https://developers.google.com/youtube/v3/docs/search/list#type
-            search.setType("video");
-
-            // To increase efficiency, only retrieve the fields that the
-            // application uses.
-            search.setFields("items(id/videoId,snippet/channelId),pageInfo,nextPageToken");
-            search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
-            search.setPageToken(nextPageToken);
-            String ids = null;
-            String channelids = null;
-            // Call the API and print results.
-            SearchListResponse searchResponse = search.execute();
-            List<SearchResult> searchResultList = searchResponse.getItems();
-            numRequests+=searchResultList.size();
-            resultsCounter +=searchResultList.size();
-            nextPageToken = searchResponse.getNextPageToken();
-            totalResults = searchResponse.getPageInfo().getTotalResults();
-            for (SearchResult sr : searchResultList) {
-                ids += sr.getId().getVideoId() + ",";
-                channelids += sr.getSnippet().getChannelId() + ",";
-            }
-
-            Map<String, Channel> users = new HashMap<>();
-            YouTube.Channels.List channelsSearch = youtube.channels().list("id,snippet,statistics");
-            channelsSearch.setKey(API_KEY);
-            channelsSearch.setId(channelids);
-            ChannelListResponse channelListResponse = channelsSearch.execute();
-            numRequests+=channelListResponse.size();
-            for (Channel c : channelListResponse.getItems()) {
-                users.put(c.getId(), c);
-            }
-
-            YouTube.Videos.List videoSearch = youtube.videos().list("id,snippet,statistics");
-            videoSearch.setKey(API_KEY);
-            videoSearch.setId(ids);
-            VideoListResponse videoListResponse = videoSearch.execute();
-            numRequests+=videoListResponse.size();
-            for (Video v : videoListResponse.getItems()) {
-                YoutubeVideo yv = new YoutubeVideo(v, users.get(v.getSnippet().getChannelId()));
-                yv.setLabel(feed.getLabel());
-                videos.add(yv);
-            }
-
-        }
-        response.setMedia(videos);
+        
+        response = getResponse(posts, media, numberOfRequests);
         return response;
     }
 
@@ -172,4 +215,5 @@ public class YouTubeRetriever extends SocialMediaRetriever {
     public UserAccount getStreamUser(String uid) {
         return null;
     }
+   
 }
