@@ -2,6 +2,7 @@ package gr.iti.mklab.sm.web;
 
 import com.google.gson.Gson;
 import com.mongodb.MongoClient;
+
 import gr.iti.mklab.simmo.core.morphia.MorphiaManager;
 import gr.iti.mklab.sm.StreamsManager;
 import gr.iti.mklab.sm.feeds.Feed;
@@ -9,6 +10,7 @@ import gr.iti.mklab.sm.feeds.GeoFeed;
 import gr.iti.mklab.sm.feeds.KeywordsFeed;
 import gr.iti.mklab.sm.streams.StreamException;
 import gr.iti.mklab.sm.streams.StreamsManagerConfiguration;
+
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import org.xml.sax.SAXException;
 
 import javax.annotation.PreDestroy;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ import java.util.Set;
 public class StreamsController {
 
     private StreamsManager manager;
+	private Thread thread;
 
     public StreamsController() throws StreamException, IOException, SAXException, ParserConfigurationException {
         
@@ -38,15 +42,21 @@ public class StreamsController {
         manager = new StreamsManager(config);
         manager.open();
         
-        Thread thread = new Thread(manager);
+        thread = new Thread(manager);
         thread.start();
     }
 
     @PreDestroy
     public void cleanUp() throws Exception {
         MorphiaManager.tearDown();
-        if (manager != null)
+        if (manager != null) {
             manager.close();
+        }
+        try {
+        	thread.interrupt();
+        }
+        catch(Exception e) {
+        }
     }
 
     /**
@@ -77,6 +87,13 @@ public class StreamsController {
         return manager.deleteFeed(id);
     }
 
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String statistics(@RequestParam String id) throws Exception {
+    	String statistics = manager.getStatistics();
+        return statistics;
+    }
+    
     public static void main(String[] args) throws Exception {
         Set<String> keywords = new HashSet<>();
         keywords.add("grexit");

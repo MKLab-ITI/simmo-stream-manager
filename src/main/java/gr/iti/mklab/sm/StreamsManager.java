@@ -2,8 +2,10 @@ package gr.iti.mklab.sm;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,8 +13,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import gr.iti.mklab.sm.feeds.Feed;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
+
+import com.google.gson.Gson;
 
 import gr.iti.mklab.sm.input.FeedsCreator;
 import gr.iti.mklab.sm.management.StorageHandler;
@@ -38,7 +43,7 @@ public class StreamsManager implements Runnable {
 	public enum ManagerState {
 		OPEN, CLOSE
 	}
-
+	
 	private Map<String, Stream> streams = null;
 	
 	private StreamsManagerConfiguration config = null;
@@ -261,6 +266,9 @@ public class StreamsManager implements Runnable {
 			thread = new Thread(manager);
 			thread.start();
 			
+			String stats = manager.getStatistics();
+			System.out.println(stats);
+			
 			Runtime.getRuntime().addShutdownHook(new Shutdown(manager));
 			
 		} catch (ParserConfigurationException e) {
@@ -276,4 +284,28 @@ public class StreamsManager implements Runnable {
 			logger.error(e.getMessage());
 		}	
 	}
+
+	public String getStatistics() {
+		Gson g = new Gson();
+	
+		Map<String, Object> stats = new HashMap<String, Object>();
+		
+		stats.put("streams", StringUtils.join(streams.keySet(), ", "));
+		stats.put("numOfFeeds", feeds.size());
+		stats.put("state", state.toString());
+		
+		List<Map<String, String>> f = new ArrayList<Map<String, String>>();
+		for(Feed feed : feeds) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("id", feed.getId());
+			map.put("source", feed.getSource());
+			map.put("since", feed.getSinceDate().toString());
+			f.add(map);
+		}
+		stats.put("feeds", f);
+		
+		String json = g.toJson(stats);
+		return json;
+	}
+
 }
