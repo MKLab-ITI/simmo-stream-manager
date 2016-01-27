@@ -15,6 +15,7 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.xml.sax.SAXException;
 
 import javax.annotation.PreDestroy;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -36,7 +38,10 @@ public class StreamsController {
 
     public StreamsController() throws StreamException, IOException, SAXException, ParserConfigurationException {
         
-    	File streamConfigFile = new File("/home/iti-310/vdata/streams.conf.xml");
+    	ClassLoader classLoader = getClass().getClassLoader();
+    	File streamConfigFile = new File(classLoader.getResource("streams.conf.xml").getFile());
+    	//File streamConfigFile = new File("streams.conf.xml");
+    	
         StreamsManagerConfiguration config = StreamsManagerConfiguration.readFromFile(streamConfigFile);
         
         manager = new StreamsManager(config);
@@ -56,6 +61,7 @@ public class StreamsController {
         	thread.interrupt();
         }
         catch(Exception e) {
+        	e.printStackTrace();
         }
     }
 
@@ -87,11 +93,11 @@ public class StreamsController {
         return manager.deleteFeed(id);
     }
 
-    @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/status", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String statistics(@RequestParam String id) throws Exception {
-    	String statistics = manager.getStatistics();
-        return statistics;
+    public Map<String, Object> status() throws Exception {
+    	Map<String, Object> status = manager.getStatus();
+    	return status;
     }
     
     public static void main(String[] args) throws Exception {

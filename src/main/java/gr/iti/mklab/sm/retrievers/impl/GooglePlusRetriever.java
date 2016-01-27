@@ -77,7 +77,8 @@ public class GooglePlusRetriever extends SocialMediaRetriever {
 		List<Media> media = new ArrayList<Media>();
 		
 		Date sinceDate = feed.getSinceDate();
-
+		String label = feed.getLabel();
+		
 		int numberOfRequests = 0;
 		
 		String uName = feed.getUsername();
@@ -157,7 +158,8 @@ public class GooglePlusRetriever extends SocialMediaRetriever {
 
 					if(publicationDate.after(sinceDate) && activity != null && activity.getId() != null) {
 						GooglePlusPost googlePlusItem = new GooglePlusPost(activity);
-
+						googlePlusItem.setLabel(label);
+						
 						if(streamUser != null) {
 							googlePlusItem.setContributor(streamUser);
 						}
@@ -212,6 +214,7 @@ public class GooglePlusRetriever extends SocialMediaRetriever {
 		List<Media> media = new ArrayList<Media>();
 		
 		Date sinceDate = feed.getSinceDate();
+		String label = feed.getLabel();
 		
 		int numberOfRequests = 0;
 		
@@ -277,6 +280,7 @@ public class GooglePlusRetriever extends SocialMediaRetriever {
 					}
 
 					GooglePlusPost googlePlusItem = new GooglePlusPost(activity);
+					googlePlusItem.setLabel(label);
 					
 					String userID = googlePlusItem.getContributor().getUserId();
 					logger.info("userID: " + userID);

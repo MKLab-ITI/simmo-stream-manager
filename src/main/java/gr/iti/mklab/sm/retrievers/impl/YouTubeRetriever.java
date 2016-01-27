@@ -104,7 +104,15 @@ public class YouTubeRetriever extends SocialMediaRetriever {
 			return response;
 		}
 		
-		String textQuery = StringUtils.join(keywords, " OR ");
+		List<String> queryParts = new ArrayList<String>();
+		for(String keyword : keywords) {
+			String [] parts = keyword.trim().split("\\s+");
+			String part = "(" + StringUtils.join(parts, " AND ") + ")";
+
+			queryParts.add(part);
+		}
+
+		String textQuery = StringUtils.join(queryParts, " OR ");
 		if(textQuery.equals("")) {
 			logger.error("Text Query is empty.");
 			response = getResponse(posts, media, numberOfRequests);
@@ -120,9 +128,6 @@ public class YouTubeRetriever extends SocialMediaRetriever {
         String nextPageToken = null;
         while(true) {
         	try {
-        		if(nextPageToken != null) {
-        			search.setPageToken(nextPageToken);
-        		}
         	
         		SearchListResponse searchResponse = search.execute();
         		numberOfRequests++;
@@ -154,15 +159,13 @@ public class YouTubeRetriever extends SocialMediaRetriever {
         					uids.add(video.getSnippet().getChannelId());
             			
         					YoutubeVideo yv = new YoutubeVideo(video);
+        					yv.setLabel(label);
+        					
         					if(yv.getCreationDate().before(sinceDate)) {
         						sinceDateReached = true;
         						break;
         					}
-            			
-        					if(label != null) {
-        						yv.addLabel(label);
-        					}
-        					
+        			
         					media.add(yv);
         				}
         			}
@@ -172,6 +175,9 @@ public class YouTubeRetriever extends SocialMediaRetriever {
         		if(nextPageToken == null) {
         			logger.info("Stop retriever. There is no more pages to fetch for query " + textQuery);
         			break;
+        		}
+        		else {
+        			search.setPageToken(nextPageToken);
         		}
         		
         	} catch (GoogleJsonResponseException e) {

@@ -123,6 +123,7 @@ public class StorageHandler {
 	 * Stops all consumer threads and all the databases used
 	 */
 	public void stop() {
+		state = StorageHandlerState.CLOSE;
 		for(Consumer consumer : consumers) {
 			consumer.die();
 		}
@@ -130,7 +131,5 @@ public class StorageHandler {
 		for(Storage storage : storages) {
 			storage.close();
 		}
-		
-		state = StorageHandlerState.CLOSE;
 	}
 }

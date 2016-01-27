@@ -1,5 +1,7 @@
 package gr.iti.mklab.sm.streams.monitors;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,10 @@ public class StreamsMonitor implements Runnable {
 	
 	private Map<String, Stream> streams = new HashMap<String, Stream>();
 	private Map<String, StreamFetchTask> streamsFetchTasks = new HashMap<String, StreamFetchTask>();
-	private Map<String, Future<?>> futures = new HashMap<String, Future<?>>();
 	
 	boolean isFinished = false;
+
+	private Future<?> monitorFuture;
 
 	public StreamsMonitor(int numberOfStreams) {
 		logger.info("Initialize Execution Service with " + numberOfStreams + " threads.");
@@ -125,7 +128,7 @@ public class StreamsMonitor implements Runnable {
 	 * @param 
 	 */
 	public void start() {
-		executor.submit(this);
+		monitorFuture = executor.submit(this);
 	}
 	
 	/**
@@ -133,16 +136,20 @@ public class StreamsMonitor implements Runnable {
 	 */
 	public void stop() {
 		isFinished = true;
+		monitorFuture.cancel(true);
 		
-		for(Future<?> future : futures.values()) {
-			future.cancel(true);
+		for(String streamId : streamsFetchTasks.keySet()) {
+			StreamFetchTask fetchTask = streamsFetchTasks.get(streamId);
+			if(fetchTask != null) {
+				fetchTask.stop();		
+			}
 		}
 		
         // Don't do this gracefully with shutdown(). Often it never really shuts down
 		executor.shutdownNow();
         while (!executor.isTerminated()) {
         	try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				logger.error(e);
 			}
@@ -156,10 +163,8 @@ public class StreamsMonitor implements Runnable {
 		for(String streamId : streamsFetchTasks.keySet()) {
 			StreamFetchTask task = streamsFetchTasks.get(streamId);
 			logger.info("Submit fetch task for " + streamId + " for execution.");
-			//executor.execute(task);
 			Future<?> future = executor.submit(task);
-			
-			futures.put(streamId, future);
+			task.setFuture(future);
 		}
 		
 		while(!isFinished) {
@@ -179,6 +184,32 @@ public class StreamsMonitor implements Runnable {
 				return;
 			}
 		}
+	}
+	
+	public Map<String, Object> getStatus() {
+		
+		Map<String, Object> stats = new HashMap<String, Object>();
+		
+		for(String sId : streams.keySet()) {
+			
+			StreamFetchTask sft = streamsFetchTasks.get(sId);
+			
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("numberOfFeeds", sft.numberOfFeeds());
+			map.put("retrievedItems", sft.getTotalRetrievedItems());
+			map.put("lastExecutionTime", new Date(sft.getLastExecutionTime()));
+			
+			List<String> feedIds = new ArrayList<String>();
+			for(Feed feed : sft.getFeeds()) {
+				feedIds.add(feed.getId());
+			}
+			map.put("feeds", feedIds);
+			
+			stats.put(sId, map);
+		}
+		
+		
+		return stats;
 	}
 	
 	/*

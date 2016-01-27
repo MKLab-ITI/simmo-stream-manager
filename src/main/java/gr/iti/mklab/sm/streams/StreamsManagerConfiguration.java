@@ -139,7 +139,6 @@ public class StreamsManagerConfiguration extends Configuration {
 		return handler.getConfig();
 	}
 	
-	
 	private static class ParseHandler extends DefaultHandler {
 
 		private enum ParseState{

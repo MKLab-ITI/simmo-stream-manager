@@ -39,7 +39,7 @@ public class Consumer extends Thread {
         gr.iti.mklab.simmo.core.Object post = null;
         while (isAlive) {
             try {
-                post = take();
+            	post = queue.take();
                 if (post == null) {
                     _logger.error("Post is null.");
                 } else {
@@ -49,10 +49,13 @@ public class Consumer extends Thread {
                 e.printStackTrace();
                 _logger.error(e);
             }
+            catch(InterruptedException e) {
+            	_logger.error(e);
+            }
         }
 
         //empty queue
-        while ((post = poll()) != null) {
+        while ((post = queue.poll()) != null) {
             try {
                 process(post);
             } catch (IOException e) {
@@ -76,31 +79,6 @@ public class Consumer extends Thread {
             	}
             }
         }
-    }
-
-    /**
-     * Polls an item from the queue
-     *
-     * @return
-     */
-    private gr.iti.mklab.simmo.core.Object poll() {
-        return queue.poll();
-    }
-
-    /**
-     * Polls an item from the queue. Waits if the queue is empty.
-     *
-     * @return
-     */
-    private gr.iti.mklab.simmo.core.Object take() {
-        gr.iti.mklab.simmo.core.Object post = null;
-        try {
-            post = queue.take();
-        } catch (InterruptedException e) {
-            _logger.error(e);
-            return null;
-        }
-        return post;
     }
 
     /**

@@ -125,6 +125,7 @@ public class TwitterRetriever extends SocialMediaRetriever {
 						
 						TwitterPost post = new TwitterPost(status);
 						post.setLabel(feedLabel);
+						
 						posts.add(post);
 					}
 				}
@@ -172,8 +173,16 @@ public class TwitterRetriever extends SocialMediaRetriever {
 			return response;
 		}
 
+		List<String> queryParts = new ArrayList<String>();
+		for(String keyword : keywords) {
+			String[] parts = keyword.trim().split("\\s+");
+			String part = "(" + StringUtils.join(parts, " AND ") + ")";
+			
+			queryParts.add(part);
+		}
+		
 		//Set the query
-		String queryText = StringUtils.join(keywords, " OR ");
+		String queryText = StringUtils.join(queryParts, " OR ");
 		logger.info("Query String: " + queryText);
 		Query query = new Query(queryText);
 	
@@ -189,13 +198,10 @@ public class TwitterRetriever extends SocialMediaRetriever {
 				numberOfRequests++;
 				
 				List<Status> statuses = queryResult.getTweets();
-				
 				if(statuses == null || statuses.isEmpty()) {
 					logger.info("No more results.");	
 					break;
 				}
-				
-				logger.info(statuses.size() + " statuses retrieved.");	
 				
 				for(Status status : statuses) {
 					if(status != null) {
@@ -209,6 +215,7 @@ public class TwitterRetriever extends SocialMediaRetriever {
 						
 						TwitterPost post = new TwitterPost(status);
 						post.setLabel(feedLabel);
+						
 						posts.add(post);
 					}
 				}
@@ -225,9 +232,11 @@ public class TwitterRetriever extends SocialMediaRetriever {
 			
 				query = queryResult.nextQuery();
 				if(query == null) {
+					logger.info("Next query is null");
 					break;
 				}
 				
+				logger.info("Request for " + query);
 				queryResult = twitter.search(query);
 			}
 			
@@ -235,6 +244,8 @@ public class TwitterRetriever extends SocialMediaRetriever {
 			logger.error(e.getMessage());
 		}	
 	
+		logger.info(posts.size() + " statuses retrieved.");	
+		
 		response = getResponse(posts, media, numberOfRequests);
 		return response;
 		

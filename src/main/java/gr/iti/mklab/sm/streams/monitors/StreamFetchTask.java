@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,6 +30,9 @@ public class StreamFetchTask implements Runnable {
 	
 	private Stream stream;
 	
+	private boolean running = true;
+	private Future<?> future;
+	
 	private Map<String, FeedFetch> feeds = Collections.synchronizedMap(new HashMap<String, FeedFetch>());
 	private LinkedBlockingQueue<Feed> feedsQueue = new LinkedBlockingQueue<Feed>();
 	
@@ -49,6 +53,10 @@ public class StreamFetchTask implements Runnable {
 		this.maxRequests = stream.getMaxRequests();
 		this.period = stream.getTimeWindow() * 60000;
 		
+	}
+	
+	public Integer numberOfFeeds() {
+		return feeds.size();
 	}
 	
 	/**
@@ -108,11 +116,24 @@ public class StreamFetchTask implements Runnable {
 		return feedsToPoll;
 	}
 
+	public List<Feed> getFeeds() {
+		List<Feed> f = new ArrayList<Feed>();
+		for(FeedFetch feedFetch : feeds.values()) {
+			f.add(feedFetch.getFeed());
+		}
+		return f;
+	}
+	
+	public void stop() {
+		running = false;	
+		future.cancel(true);
+	}
+	
 	@Override
 	public void run() {
 		int maxRequestsPerFeed = (int) (0.2 * maxRequests);
 		
-		while(true) {
+		while(running) {
 			try {
 				long currentTime = System.currentTimeMillis();
 				if((currentTime -  lastResetTime) > period) {
@@ -154,7 +175,6 @@ public class StreamFetchTask implements Runnable {
 							else {
 								logger.error("There is no fetch structure for feed (" + feed.getId() + ")");
 							}
-
 						}
 					}
 				}
@@ -189,6 +209,14 @@ public class StreamFetchTask implements Runnable {
 
 	public void setTotalRetrievedItems(long totalRetrievedItems) {
 		this.totalRetrievedItems = totalRetrievedItems;
+	}
+
+	public Future<?> getFuture() {
+		return future;
+	}
+
+	public void setFuture(Future<?> future) {
+		this.future = future;
 	}
 
 	public class FeedFetch {

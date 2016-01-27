@@ -22,7 +22,6 @@ import java.util.concurrent.ExecutionException;
 public class MongoDBSplitStorage implements Storage {
 
     private static String HOST = "mongodb.host";
-    private static String DB = "mongodb.database";
 
     private Logger logger = Logger.getLogger(MongoDBSplitStorage.class);
 
@@ -64,15 +63,19 @@ public class MongoDBSplitStorage implements Storage {
         try {
             DAOManager dao = DAOManagerFactory.getDAOManager(object.getLabel());
             if (object instanceof Image) {
-                if (object.getContributor() != null)
+                if (object.getContributor() != null) {
                     dao.userDAO.save(object.getContributor());
+                }
                 dao.imageDAO.save((Image) object);
             } else if (object instanceof Video) {
-                if (object.getContributor() != null)
+                if (object.getContributor() != null) {
                     dao.userDAO.save(object.getContributor());
+                }
                 dao.videoDAO.save((Video) object);
-            } else
+            } else {
                 dao.savePost((Post) object);
+            }
+            
         } catch (MongoException e) {
             e.printStackTrace();
             logger.error("Storing item " + object.getId() + " failed.");

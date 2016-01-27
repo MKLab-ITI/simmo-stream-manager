@@ -74,7 +74,6 @@ public class FlickrRetriever extends SocialMediaRetriever {
 		
 		int page=1, pages=1; //pagination
 		int numberOfRequests = 0;
-		int numberOfResults = 0;
 		
 		//Here we search the user by the userId given (NSID) - 
 		// however we can get NSID via flickrAPI given user's username
@@ -105,7 +104,6 @@ public class FlickrRetriever extends SocialMediaRetriever {
 			}
 			
 			pages = photos.getPages();
-			numberOfResults += photos.size();
 
 			if(photos.isEmpty()) {
 				break;
@@ -121,7 +119,7 @@ public class FlickrRetriever extends SocialMediaRetriever {
 				}
 
 				FlickrPost flickrItem = new FlickrPost(photo);
-				//flickrItem.setList(label);
+				flickrItem.setLabel(label);
 				
 				items.add(flickrItem);
 			}
@@ -149,7 +147,6 @@ public class FlickrRetriever extends SocialMediaRetriever {
 		int page=1, pages=1;
 		
 		int numberOfRequests = 0;
-		int numberOfResults = 0;
 		
 		List<String> keywords = feed.getKeywords();
 		
@@ -199,7 +196,6 @@ public class FlickrRetriever extends SocialMediaRetriever {
 			}
 			
 			pages = photos.getPages();
-			numberOfResults += photos.size();
 
 			if(photos.isEmpty()) {
 				break;
@@ -215,17 +211,11 @@ public class FlickrRetriever extends SocialMediaRetriever {
 				}
 
 				FlickrPost flickrItem = new FlickrPost(photo);
-                flickrItem.setLabel(feed.getLabel());
-				//flickrItem.setList(label);
+				flickrItem.setLabel(label);
 				
 				items.add(flickrItem);
 			}
 		}
-			
-//		logger.info("#Flickr : Done retrieving for this session");
-//		logger.info("#Flickr : Handler fetched " + items.size() + " photos from " + text + 
-//				" [ " + lastItemDate + " - " + new Date(System.currentTimeMillis()) + " ]");
-
 		
 		response.setPosts(items);
 		response.setRequests(numberOfRequests);

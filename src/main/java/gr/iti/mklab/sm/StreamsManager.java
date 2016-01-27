@@ -17,8 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
-import com.google.gson.Gson;
-
 import gr.iti.mklab.sm.input.FeedsCreator;
 import gr.iti.mklab.sm.management.StorageHandler;
 import gr.iti.mklab.sm.streams.Stream;
@@ -137,6 +135,8 @@ public class StreamsManager implements Runnable {
 		}
 		
 		try {
+			state = ManagerState.CLOSE;
+			
             //CHANGE: Stop the monitor instead of looping through the streams and stopping them
             //to interrupt all running threads
 			if (monitor != null) {
@@ -148,7 +148,6 @@ public class StreamsManager implements Runnable {
 			}
 			
 			thread.interrupt();
-			state = ManagerState.CLOSE;
 		}
 		catch(Exception e) {
 			throw new StreamException("Error during streams close", e);
@@ -263,13 +262,15 @@ public class StreamsManager implements Runnable {
 			manager = new StreamsManager(config);
 			manager.open();
 			
+			Runtime.getRuntime().addShutdownHook(new Shutdown(manager));
+			
 			thread = new Thread(manager);
 			thread.start();
 			
-			String stats = manager.getStatistics();
+			Map<String, Object> stats = manager.getStatus();
 			System.out.println(stats);
 			
-			Runtime.getRuntime().addShutdownHook(new Shutdown(manager));
+			thread.join();
 			
 		} catch (ParserConfigurationException e) {
 			logger.error(e.getMessage());
@@ -285,8 +286,7 @@ public class StreamsManager implements Runnable {
 		}	
 	}
 
-	public String getStatistics() {
-		Gson g = new Gson();
+	public Map<String, Object> getStatus() {
 	
 		Map<String, Object> stats = new HashMap<String, Object>();
 		
@@ -304,8 +304,9 @@ public class StreamsManager implements Runnable {
 		}
 		stats.put("feeds", f);
 		
-		String json = g.toJson(stats);
-		return json;
+		stats.put("monitor", monitor.getStatus());
+		
+		return stats;
 	}
 
 }
