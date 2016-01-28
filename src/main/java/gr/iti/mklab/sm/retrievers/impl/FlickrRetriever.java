@@ -125,11 +125,6 @@ public class FlickrRetriever extends SocialMediaRetriever {
 			}
 		}
 		
-		//logger.info("#Flickr : Done retrieving for this session");
-//		logger.info("#Flickr : Handler fetched " + items.size() + " photos from " + userID + 
-//				" [ " + lastItemDate + " - " + new Date(System.currentTimeMillis()) + " ]");
-
-
 		response.setPosts(items);
 		response.setRequests(numberOfRequests);
 		return response;

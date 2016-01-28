@@ -93,14 +93,18 @@ public abstract class Stream {
 
 				if(handler != null) {
 					Date sinceDate = new Date(0l);
+					
 					for(Post item : response.getPosts()) {
 						if(sinceDate.before(item.getCreationDate())) {
 							sinceDate = item.getCreationDate();
 						}
 						handler.handle(item);
 					}
-                    for(Media item: response.getMedia()){
-                        handler.handle(item);
+                    
+					for(Media item: response.getMedia()) {
+						if(item.getContributor() != null) {
+							handler.handle(item);
+						}
                     }
 					
 					// Set new since date 

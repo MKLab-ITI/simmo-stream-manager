@@ -25,6 +25,7 @@ import com.google.api.services.plus.model.ActivityFeed;
 import com.google.api.services.plus.model.PeopleFeed;
 import com.google.api.services.plus.model.Person;
 
+import gr.iti.mklab.simmo.core.Item;
 import gr.iti.mklab.simmo.core.UserAccount;
 import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.simmo.core.items.Media;
@@ -160,10 +161,11 @@ public class GooglePlusRetriever extends SocialMediaRetriever {
 						GooglePlusPost googlePlusItem = new GooglePlusPost(activity);
 						googlePlusItem.setLabel(label);
 						
-						if(streamUser != null) {
-							googlePlusItem.setContributor(streamUser);
+						googlePlusItem.setContributor(streamUser);
+						for(Item item : googlePlusItem.getItems()) {
+							item.setContributor(streamUser);
 						}
-						
+							
 						posts.add(googlePlusItem);
 					}
 					else {
@@ -285,17 +287,21 @@ public class GooglePlusRetriever extends SocialMediaRetriever {
 					String userID = googlePlusItem.getContributor().getUserId();
 					logger.info("userID: " + userID);
 					
-					UserAccount streamUser = null;
+					UserAccount user = null;
 					if(userID != null && !users.containsKey(userID)) {
-						streamUser = getStreamUser(userID);
-						users.put(userID, streamUser);	
+						user = getStreamUser(userID);
+						users.put(userID, user);	
 					}
 					else {
-						streamUser = users.get(userID);
+						user = users.get(userID);
 					}
 							
-					if(streamUser != null) {
-						googlePlusItem.setContributor(streamUser);
+					if(user != null) {
+						googlePlusItem.setContributor(user);
+						for(Item item : googlePlusItem.getItems()) {
+							item.setContributor(user);
+						}
+						
 						posts.add(googlePlusItem);
 					}
 		
