@@ -116,6 +116,7 @@
     </dependencies>
     
     <build>
+   		<finalName>sm</finalName>
     	<pluginManagement>
         	<plugins>
            		<plugin>
