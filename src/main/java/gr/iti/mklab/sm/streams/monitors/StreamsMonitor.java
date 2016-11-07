@@ -147,6 +147,7 @@ public class StreamsMonitor implements Runnable {
 		
         // Don't do this gracefully with shutdown(). Often it never really shuts down
 		executor.shutdownNow();
+		/*
         while (!executor.isTerminated()) {
         	try {
 				Thread.sleep(2000);
@@ -155,6 +156,7 @@ public class StreamsMonitor implements Runnable {
 			}
         	logger.info("Waiting for StreamsMonitor to shutdown");
         }
+        */
         logger.info("Streams Monitor stopped");
 	}
 

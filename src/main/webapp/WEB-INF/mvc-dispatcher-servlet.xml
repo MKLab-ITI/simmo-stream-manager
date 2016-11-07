@@ -15,8 +15,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <bean id="jsonConverter"
-          class="org.springframework.http.converter.json.GsonHttpMessageConverter">
+    <bean id="jsonConverter" class="org.springframework.http.converter.json.GsonHttpMessageConverter">
         <property name="supportedMediaTypes" value="application/json" />
     </bean>
 

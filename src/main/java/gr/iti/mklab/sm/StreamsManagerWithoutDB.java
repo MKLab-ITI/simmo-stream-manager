@@ -24,9 +24,9 @@ import java.util.*;
  *
  * @author kandreadou
  */
-public class StreamsManager2 implements Runnable {
+public class StreamsManagerWithoutDB implements Runnable {
 
-    public final Logger logger = Logger.getLogger(StreamsManager2.class);
+    public final Logger logger = Logger.getLogger(StreamsManagerWithoutDB.class);
 
     enum ManagerState {
         OPEN, CLOSE
@@ -44,7 +44,7 @@ public class StreamsManager2 implements Runnable {
 
     private Set<Feed> feeds = new HashSet<Feed>();
 
-    public StreamsManager2(StreamsManagerConfiguration config) throws StreamException {
+    public StreamsManagerWithoutDB(StreamsManagerConfiguration config) throws StreamException {
 
         if (config == null) {
             throw new StreamException("Manager's configuration must be specified");
@@ -261,7 +261,7 @@ public class StreamsManager2 implements Runnable {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);
         KeywordsFeed flickr = new KeywordsFeed();
-        flickr.addKeywords(new ArrayList(keywords));
+        flickr.addKeywords(new ArrayList<String>(keywords));
         flickr.setId("Flickr#1");
         flickr.setSinceDate(cal.getTime());
         flickr.setSource("Flickr");
@@ -269,7 +269,7 @@ public class StreamsManager2 implements Runnable {
         feeds.add(flickr);
 
         KeywordsFeed feed = new KeywordsFeed();
-        feed.addKeywords(new ArrayList(keywords));
+        feed.addKeywords(new ArrayList<String>(keywords));
         feed.setId("Twitter#1");
         feed.setSinceDate(cal.getTime());
         feed.setSource("Twitter");
@@ -277,21 +277,21 @@ public class StreamsManager2 implements Runnable {
         feeds.add(feed);
 
         KeywordsFeed instagram = new KeywordsFeed();
-        instagram.addKeywords(new ArrayList(keywords));
+        instagram.addKeywords(new ArrayList<String>(keywords));
         instagram.setId("Instagram#1");
         instagram.setSinceDate(cal.getTime());
         instagram.setSource("Instagram");
         instagram.setLabel("tInstagram");
         feeds.add(instagram);
         KeywordsFeed tumblr = new KeywordsFeed();
-        tumblr.addKeywords(new ArrayList(keywords));
+        tumblr.addKeywords(new ArrayList<String>(keywords));
         tumblr.setId("Tumblr#1");
         tumblr.setSinceDate(cal.getTime());
         tumblr.setSource("Tumblr");
         tumblr.setLabel("tTumblr");
         feeds.add(tumblr);
         KeywordsFeed youtube = new KeywordsFeed();
-        youtube.addKeywords(new ArrayList(keywords));
+        youtube.addKeywords(new ArrayList<String>(keywords));
         youtube.setId("Youtube#1");
         youtube.setSinceDate(cal.getTime());
         youtube.setSource("YouTube");
@@ -314,11 +314,13 @@ public class StreamsManager2 implements Runnable {
         try {
             StreamsManagerConfiguration config = StreamsManagerConfiguration.readFromFile(streamConfigFile);
 
-            StreamsManager2 manager = new StreamsManager2(config);
-            if (isGeo)
+            StreamsManagerWithoutDB manager = new StreamsManagerWithoutDB(config);
+            if (isGeo) {
                 manager.open(lon1, lat1, lon2, lat2);
-            else
+            }
+            else {
                 manager.open(set);
+            }
 
             Thread thread = new Thread(manager);
             thread.start();

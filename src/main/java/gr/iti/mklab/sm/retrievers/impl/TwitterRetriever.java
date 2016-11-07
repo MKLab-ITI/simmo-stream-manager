@@ -87,13 +87,14 @@ public class TwitterRetriever extends SocialMediaRetriever {
 		
 		String feedLabel = feed.getLabel();
 		
-		Long uid = Long.parseLong(feed.getId());
-		String screenName = feed.getUsername();
-		if(uid == null && screenName == null) {
+		if(feed.getId() == null && feed.getUsername() == null) {
 			logger.error("Uid and Username is null for feed [" + feed + "]");
 			response = getResponse(posts, media, numberOfRequests);
 			return response;
 		}
+		
+		Long uid = Long.parseLong(feed.getId());
+		String screenName = feed.getUsername();
 		
 		int page = 1;
 		Paging paging = new Paging(page, count);

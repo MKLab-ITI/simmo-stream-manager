@@ -31,16 +31,15 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/sm")
-public class StreamsController {
+public class StreamsManagerController {
 
     private StreamsManager manager;
 	private Thread thread;
 
-    public StreamsController() throws StreamException, IOException, SAXException, ParserConfigurationException {
+    public StreamsManagerController() throws StreamException, IOException, SAXException, ParserConfigurationException {
         
     	ClassLoader classLoader = getClass().getClassLoader();
     	File streamConfigFile = new File(classLoader.getResource("streams.conf.xml").getFile());
-    	//File streamConfigFile = new File("streams.conf.xml");
     	
         StreamsManagerConfiguration config = StreamsManagerConfiguration.readFromFile(streamConfigFile);
         

@@ -16,11 +16,6 @@ import org.mongodb.morphia.annotations.Entity;
 
 @Entity(noClassnameStored = true)
 public class Configuration implements Iterable<String> {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5070483137103099259L;
 	
 	public static final String CLASS_PATH = "Classpath";
 	

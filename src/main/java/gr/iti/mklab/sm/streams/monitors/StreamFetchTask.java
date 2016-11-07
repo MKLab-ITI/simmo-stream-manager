@@ -182,7 +182,7 @@ public class StreamFetchTask implements Runnable {
 					Thread.sleep(2000);
 				}				
 			} catch (Exception e) {
-				logger.error("Exception in stream fetch task for " + stream.getName(), e);
+				logger.error("Exception in stream fetch task for " + stream.getName() +". Running: " + running, e);
 			}	
 		}
 	}

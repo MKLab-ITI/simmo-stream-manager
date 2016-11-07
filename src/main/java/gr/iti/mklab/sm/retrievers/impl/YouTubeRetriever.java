@@ -123,7 +123,6 @@ public class YouTubeRetriever extends SocialMediaRetriever {
         search.setMaxResults(NUMBER_OF_RESULTS_RETURNED);
         search.setOrder("date");
         
-        Set<String> uids = new HashSet<String>();
         boolean sinceDateReached = false;
         String nextPageToken = null;
         while(true) {
@@ -156,8 +155,6 @@ public class YouTubeRetriever extends SocialMediaRetriever {
         			List<Video> videoList = listResponse.getItems();
         			if (videoList != null) {
         				for(Video video : videoList) {
-        					uids.add(video.getSnippet().getChannelId());
-            			
         					YoutubeVideo yv = new YoutubeVideo(video);
         					yv.setLabel(label);
         					
