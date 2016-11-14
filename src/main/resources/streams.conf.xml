@@ -2,8 +2,8 @@
 <Configuration>
 	<Inputs>
     	<Input id="feeds">
-       		<Parameter name="host"><![CDATA[social1.atc.gr]]></Parameter>
-         	<Parameter name="database"><![CDATA[defeeeds]]></Parameter>
+       		<Parameter name="host"><![CDATA[xxx.xxx.xxx.xxx]]></Parameter>
+         	<Parameter name="database"><![CDATA[defeeds]]></Parameter>
       	</Input>
    	</Inputs>
    	
@@ -11,8 +11,7 @@
     	<!-- Mongodb storage configuration -->
       	<Storage id="Mongodb">
         	<Parameter name="Classpath"><![CDATA[gr.iti.mklab.sm.storages.MongoDBSplitStorage]]></Parameter>
-         	<Parameter name="mongodb.host"><![CDATA[social1.atc.gr]]></Parameter>
-         	<Parameter name="mongodb.database"><![CDATA[feeds_stream]]></Parameter>
+         	<Parameter name="mongodb.host"><![CDATA[xxx.xxx.xxx.xxx]]></Parameter>
       	</Storage>
   	</Storages>
    

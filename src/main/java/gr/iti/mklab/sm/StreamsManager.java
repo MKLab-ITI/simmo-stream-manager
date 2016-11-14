@@ -294,6 +294,8 @@ public class StreamsManager implements Runnable {
 		stats.put("numOfFeeds", feeds.size());
 		stats.put("state", state.toString());
 		
+		stats.put("input", config.getInputConfig());
+		
 		List<Map<String, String>> f = new ArrayList<Map<String, String>>();
 		for(Feed feed : feeds) {
 			Map<String, String> map = new HashMap<String, String>();
