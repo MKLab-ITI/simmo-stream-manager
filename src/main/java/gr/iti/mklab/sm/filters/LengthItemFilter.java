@@ -9,14 +9,15 @@ import org.apache.log4j.Logger;
 
 public class LengthItemFilter extends ItemFilter {
 
-	private int minTextLenth = 15;
-
+	private int minTextLength = 15;
+	private int maxTextLength = 2000;
+	
 	public LengthItemFilter(Configuration configuration) {
 		super(configuration);
 		String lenStr =configuration.getParameter("length", "15");
-		this.minTextLenth  = Integer.parseInt(lenStr);
+		this.minTextLength  = Integer.parseInt(lenStr);
 		
-		Logger.getLogger(LengthItemFilter.class).info("Initialized. Min Text Lenth: " + minTextLenth);
+		Logger.getLogger(LengthItemFilter.class).info("Initialized. Min Text Lenth: " + minTextLength);
 	}
 	
 	@Override
@@ -49,7 +50,7 @@ public class LengthItemFilter extends ItemFilter {
 			
 		}
 		
-		if(title.length() < minTextLenth) {
+		if(title.length() < minTextLength && title.length() < maxTextLength) {
 			incrementDiscarded();
 			return false;
 		}
