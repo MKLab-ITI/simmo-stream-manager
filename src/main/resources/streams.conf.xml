@@ -2,7 +2,7 @@
 <Configuration>
 	<Inputs>
     	<Input id="feeds">
-       		<Parameter name="host"><![CDATA[xxx.xxx.xxx.xxx]]></Parameter>
+       		<Parameter name="host"><![CDATA[127.0.0.1]]></Parameter>
          	<Parameter name="database"><![CDATA[defeeds]]></Parameter>
       	</Input>
    	</Inputs>
@@ -11,7 +11,7 @@
     	<!-- Mongodb storage configuration -->
       	<Storage id="Mongodb">
         	<Parameter name="Classpath"><![CDATA[gr.iti.mklab.sm.storages.MongoDBSplitStorage]]></Parameter>
-         	<Parameter name="mongodb.host"><![CDATA[xxx.xxx.xxx.xxx]]></Parameter>
+         	<Parameter name="mongodb.host"><![CDATA[127.0.0.1]]></Parameter>
       	</Storage>
   	</Storages>
    
@@ -22,6 +22,9 @@
          	<Parameter name="length"><![CDATA[10]]></Parameter>
       	</Filter>
       	-->
+      	<Filter id="SwearFilter">
+       		<Parameter name="Classpath"><![CDATA[gr.iti.mklab.sm.filters.SwearItemFilter]]></Parameter>
+      	</Filter>
    	</Filters>
    	
    	<Processors> </Processors>
