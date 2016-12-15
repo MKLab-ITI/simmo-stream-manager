@@ -25,12 +25,12 @@ public class SwearItemFilter extends ItemFilter {
 		
 		 List<String> swearWords = Arrays.asList("adultvideo","adultsex","adultxxx","amateursex","amateurpics","anal","analsex","anus","arse","ar5e","ass","assfucker","assfukka","asshole","threesome",
 		    		"ballsack","balls","bastard","bitch","biatch","bigtits","blackasses","blowjob","bollock","bollok","boner","boob","boobies","bugger","bum","butt","buttplug","clitoris",
-		    		"blondepussy","bukkake","cock","cocksuck","cocksucker","cocksucking","cockface","cockhead","cockmunch","c0cksucker","clitoris",
+		    		"blondepussy","bukkake","carsex","cock","cocksuck","cocksucker","cocksucking","cockface","cockhead","cockmunch","c0cksucker","clitoris",
 		    		"coon","crap","cum","cumshot","cummer","cunt","cuntlick","cuntlicking","damn","dick","dickhead","dlck","dildo","dogsex","dyke","ejaculate","ejaculation","erotica",
-		    		"eatpussy","fag","faggot","feck","fellate","fellatio","felching","fingerfuck","fistfuck","fisting","fuck","fuckme","fudgepacker","flange",
+		    		"eatpussy","fag","faggot","feck","fellate","fellatio","felching","fingerfuck","fistfuck","fisting","fuck","fuckme","fudgepacker","flange","masterbation",
 		    		"gangbang","goddamn","handjob","homo","horny","jerk","jizz","knobend","labia","lmao","lmfao","muff","nigger","nigga","niggah","nipples","porn","penis","pigfucker","piss","poop",
-		    		"peepshow","prick","pube","pussy","pussie","queer","scrotum","sexxx","shemale","shit","sh1t","shitdick","shiting","shitter","squirting","slut","smegma","spunk","tit","titfuck","tittywank","tosser",
-		    		"turd","twat","transsexual","upskirts","vagina","vulva","wank","wanker","whore","wtf","xxx","xxxvideo","xxxpic");
+		    		"peepshow","prick","pube","pussy","pussie","queer","scrotum","sexxx","shemale","shit","sh1t","shitdick","shiting","shitter","squirting","slut","smegma","spunk","tit", "tits", "titfuck","tittywank","tosser",
+		    		"teenporn","turd","twat","transsexual","upskirts","vagina","vulva","wank","wanker","whore","wtf","xxx","xxxvideo","xxxpic");
 
 			swearwords.addAll(swearWords);
 	}
@@ -39,12 +39,22 @@ public class SwearItemFilter extends ItemFilter {
 	public boolean accept(Post post) {
 		try {
 			String title = post.getTitle();
-			if(title == null) {
+			String description = post.getDescription();
+			if(title == null && description == null) {
 				incrementAccepted();
 				return true;
 			}
 			
-			Reader reader = new StringReader(title);
+			StringBuffer strBuffer = new StringBuffer();
+			if(title != null) {
+				strBuffer.append(title);
+			}
+			
+			if(description != null) {
+				strBuffer.append(description);
+			}
+			
+			Reader reader = new StringReader(strBuffer.toString());
 			TokenStream tokenizer = new WhitespaceTokenizer(reader);
 			
 			List<String> tokens = new ArrayList<String>();
