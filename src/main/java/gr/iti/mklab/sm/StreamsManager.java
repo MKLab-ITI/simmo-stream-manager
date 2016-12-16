@@ -307,6 +307,8 @@ public class StreamsManager implements Runnable {
 		stats.put("feeds", f);
 		
 		stats.put("monitor", monitor.getStatus());
+		stats.put("storage", storageHandler.getStatus());
+		
 		
 		return stats;
 	}

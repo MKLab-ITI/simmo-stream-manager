@@ -3,7 +3,9 @@ package gr.iti.mklab.sm.management;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -152,5 +154,14 @@ public class StorageHandler {
 		for(Storage storage : storages) {
 			storage.close();
 		}
+	}
+
+	public Map<String, Object> getStatus() {
+		Map<String, Object> stats = new HashMap<String, Object>();
+		for(ItemFilter filter : filters) {
+			stats.put(filter.name(), filter.status());
+		}
+		
+		return stats;
 	}
 }
