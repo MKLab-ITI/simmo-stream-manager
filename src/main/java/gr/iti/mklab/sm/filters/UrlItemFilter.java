@@ -3,7 +3,6 @@ package gr.iti.mklab.sm.filters;
 import java.util.List;
 
 import gr.iti.mklab.simmo.core.associations.Reference;
-import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 
 import org.apache.log4j.Logger;
@@ -28,7 +27,7 @@ public class UrlItemFilter extends ItemFilter {
 	}
 	
 	@Override
-	public boolean accept(Post post) {
+	public boolean accept(gr.iti.mklab.simmo.core.Object post) {
 		if(post == null) {
 			incrementDiscarded();
 			return false;

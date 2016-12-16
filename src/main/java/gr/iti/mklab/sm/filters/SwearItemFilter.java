@@ -13,7 +13,6 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
-import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 
 public class SwearItemFilter extends ItemFilter {
@@ -36,7 +35,7 @@ public class SwearItemFilter extends ItemFilter {
 	}
 
 	@Override
-	public boolean accept(Post post) {
+	public boolean accept(gr.iti.mklab.simmo.core.Object post) {
 		try {
 			String title = post.getTitle();
 			String description = post.getDescription();

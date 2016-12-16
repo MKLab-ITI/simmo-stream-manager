@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingQueue;
 
 import org.apache.log4j.Logger;
 
+import gr.iti.mklab.sm.filters.ItemFilter;
 import gr.iti.mklab.sm.storages.Storage;
 
 /**
@@ -26,9 +27,12 @@ public class Consumer extends Thread {
 
     private BlockingQueue<gr.iti.mklab.simmo.core.Object> queue;
 
-    public Consumer(BlockingQueue<gr.iti.mklab.simmo.core.Object> queue, List<Storage> storages) {
+	private List<ItemFilter> filters;
+
+    public Consumer(BlockingQueue<gr.iti.mklab.simmo.core.Object> queue, List<Storage> storages, List<ItemFilter> filters) {
         this.storages = storages;
         this.queue = queue;
+        this.filters = filters;
         this.setName("Consumer_" + (id++));
     }
 
@@ -73,6 +77,18 @@ public class Consumer extends Thread {
      */
     private void process(gr.iti.mklab.simmo.core.Object post) throws IOException {
         if (storages != null) {
+        	
+        	for(ItemFilter filter : filters) {
+				boolean accept = true;
+				synchronized(filter) {
+					accept = filter.accept(post);
+				}
+				
+				if(!accept) {
+					return;
+				}
+			}
+        	
             for (Storage storage : storages) {
             	synchronized(storage) {
             		storage.store(post);

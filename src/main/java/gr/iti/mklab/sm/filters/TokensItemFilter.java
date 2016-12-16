@@ -5,7 +5,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 
 import org.apache.log4j.Logger;
@@ -26,7 +25,7 @@ public class TokensItemFilter  extends ItemFilter {
 	}
 
 	@Override
-	public boolean accept(Post item) {
+	public boolean accept(gr.iti.mklab.simmo.core.Object item) {
 		
 		try {
 			String title = item.getTitle();

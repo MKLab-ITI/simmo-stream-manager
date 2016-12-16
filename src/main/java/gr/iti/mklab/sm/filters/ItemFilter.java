@@ -1,6 +1,5 @@
 package gr.iti.mklab.sm.filters;
 
-import gr.iti.mklab.simmo.core.documents.Post;
 import gr.iti.mklab.sm.Configuration;
 
 public abstract class ItemFilter {
@@ -14,7 +13,7 @@ public abstract class ItemFilter {
 		this.configuration = configuration;
 	}
 	
-	public abstract boolean accept(Post post);
+	public abstract boolean accept(gr.iti.mklab.simmo.core.Object object);
 	
 	public abstract String name();
 	

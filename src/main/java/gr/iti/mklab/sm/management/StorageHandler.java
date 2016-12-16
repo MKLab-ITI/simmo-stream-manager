@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import gr.iti.mklab.sm.Configuration;
+import gr.iti.mklab.sm.filters.ItemFilter;
 
 import org.apache.log4j.Logger;
 
@@ -34,6 +35,7 @@ public class StorageHandler {
 	private List<Consumer> consumers = new ArrayList<Consumer>(numberOfConsumers);
 	
 	private List<Storage> storages = new ArrayList<Storage>();
+	private List<ItemFilter> filters = new ArrayList<ItemFilter>();
 	
 	public enum StorageHandlerState {
 		OPEN, CLOSE
@@ -43,6 +45,9 @@ public class StorageHandler {
 	
 	public StorageHandler(StreamsManagerConfiguration config) {
 		try {	
+			
+			createFilters(config);
+			
 			initializeStorageHandler(config);	
 			state = StorageHandlerState.OPEN;
 			
@@ -61,7 +66,7 @@ public class StorageHandler {
 	 */
 	public void start() {
 		for(int i=0; i<numberOfConsumers; i++) {
-			Consumer consumer = new Consumer(queue, storages);
+			Consumer consumer = new Consumer(queue, storages, filters);
 			consumers.add(consumer);
 		}
 		
@@ -119,6 +124,22 @@ public class StorageHandler {
 		}
 	}
 	
+	private void createFilters(StreamsManagerConfiguration config) throws StreamException {
+		for (String filterId : config.getFilterIds()) {
+			try {
+				logger.info("Initialize filter " + filterId);
+				Configuration fconfig = config.getFilterConfig(filterId);
+				String className = fconfig.getParameter(Configuration.CLASS_PATH);
+				Constructor<?> constructor = Class.forName(className).getConstructor(Configuration.class);
+				ItemFilter filterInstance = (ItemFilter) constructor.newInstance(fconfig);
+			
+				filters.add(filterInstance);
+			}
+			catch(Exception e) {
+				logger.error("Error during filter " + filterId + "initialization", e);
+			}
+		}
+	}
 	/**
 	 * Stops all consumer threads and all the databases used
 	 */
