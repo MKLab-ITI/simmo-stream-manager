@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
@@ -24,10 +25,10 @@ public class SwearItemFilter extends ItemFilter {
 		
 		 List<String> swearWords = Arrays.asList("adultvideo","adultsex","adultxxx","amateursex","amateurpics","anal","analsex","anus","arse","ar5e","ass","assfucker","assfukka","asshole","threesome",
 		    		"ballsack","balls","bastard","bitch","biatch","bigtits","blackasses","blowjob","bollock","bollok","boner","boob","boobies","bugger","bum","butt","buttplug","clitoris",
-		    		"blondepussy","bukkake","carsex","cock","cocksuck","cocksucker","cocksucking","cockface","cockhead","cockmunch","c0cksucker","clitoris",
+		    		"blondepussy","bukkake","carsex","cock","cocksuck","cocksucker","cocksucking","cockface","cockhead","cockmunch","c0cksucker","clitoris","brazzers",
 		    		"coon","crap","cum","cumshot","cummer","cunt","cuntlick","cuntlicking","damn","dick","dickhead","dlck","dildo","dogsex","dyke","ejaculate","ejaculation","erotica",
 		    		"eatpussy","fag","faggot","feck","fellate","fellatio","felching","fingerfuck","fistfuck","fisting","fuck","fuckme","fudgepacker","flange","masterbation",
-		    		"gangbang","goddamn","handjob","homo","horny","jerk","jizz","knobend","labia","lmao","lmfao","muff","nigger","nigga","niggah","nipples","porn","penis","pigfucker","piss","poop",
+		    		"gangbang","goddamn","handjob","homo","horny","jerk","jizz","knobend","labia","lmao","lmfao","milf","muff","nigger","nigga","niggah","nipples","porn","pornstar","penis","pigfucker","piss","poop",
 		    		"peepshow","prick","pube","pussy","pussie","queer","scrotum","sexxx","shemale","shit","sh1t","shitdick","shiting","shitter","squirting","slut","smegma","spunk","tit", "tits", "titfuck","tittywank","tosser",
 		    		"teenporn","turd","twat","transsexual","upskirts","vagina","vulva","wank","wanker","whore","wtf","xxx","xxxvideo","xxxpic");
 
@@ -55,19 +56,26 @@ public class SwearItemFilter extends ItemFilter {
 			
 			Reader reader = new StringReader(strBuffer.toString());
 			TokenStream tokenizer = new WhitespaceTokenizer(reader);
+			TokenStream stream = new LowerCaseFilter(tokenizer);
 			
 			List<String> tokens = new ArrayList<String>();
 			CharTermAttribute charTermAtt = tokenizer.addAttribute(CharTermAttribute.class);
-			tokenizer.reset();
-			while (tokenizer.incrementToken()) {
+			stream.reset();
+			while (stream.incrementToken()) {
 				String token = charTermAtt.toString();
-				if(token.contains("http") || token.contains(".") || token.length() <= 1) {
+				if(token.length() <= 1) {
 					continue;
 				}
+				
+				token = token.replaceAll("#", "");
+				token = token.replaceAll("\"", "");
+				token = token.replaceAll("'", "");
+				token = token.replaceAll(".", "");
+				
 				tokens.add(token);
 			}
-			tokenizer.end();  
-			tokenizer.close();
+			stream.end();  
+			stream.close();
 		
 			for(String token : tokens) {
 				if(swearwords.contains(token)) {
