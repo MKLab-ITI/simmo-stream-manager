@@ -23,7 +23,7 @@ public class SwearItemFilter extends ItemFilter {
 	public SwearItemFilter(Configuration configuration) {
 		super(configuration);
 		
-		 List<String> swearWords = Arrays.asList("adultvideo","adultsex","adultxxx","amateursex","amateurpics","anal","analsex","anus","arse","ar5e","ass","assfucker","assfukka","asshole","threesome",
+		 List<String> swearWords = Arrays.asList("escort","adultvideo","adultsex","adultxxx","amateursex","amateurpics","anal","analsex","anus","arse","ar5e","ass","assfucker","assfukka","asshole","threesome",
 		    		"ballsack","balls","bastard","bitch","biatch","bigtits","blackasses","blowjob","bollock","bollok","boner","boob","boobies","bugger","bum","butt","buttplug","clitoris",
 		    		"blondepussy","bukkake","carsex","cock","cocksuck","cocksucker","cocksucking","cockface","cockhead","cockmunch","c0cksucker","clitoris","brazzers",
 		    		"coon","crap","cum","cumshot","cummer","cunt","cuntlick","cuntlicking","damn","dick","dickhead","dlck","dildo","dogsex","dyke","ejaculate","ejaculation","erotica",
