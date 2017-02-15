@@ -2,7 +2,7 @@
 <Configuration>
 	<Inputs>
     	<Input id="feeds">
-       		<Parameter name="host"><![CDATA[127.0.0.1]]></Parameter>
+       		<Parameter name="host"><![CDATA[social1.atc.gr]]></Parameter>
          	<Parameter name="database"><![CDATA[defeeds]]></Parameter>
       	</Input>
    	</Inputs>
@@ -11,7 +11,7 @@
     	<!-- Mongodb storage configuration -->
       	<Storage id="Mongodb">
         	<Parameter name="Classpath"><![CDATA[gr.iti.mklab.sm.storages.MongoDBSplitStorage]]></Parameter>
-         	<Parameter name="mongodb.host"><![CDATA[127.0.0.1]]></Parameter>
+         	<Parameter name="mongodb.host"><![CDATA[social1.atc.gr]]></Parameter>
       	</Storage>
   	</Storages>
    
@@ -53,7 +53,7 @@
      		<Parameter name="ClientId"><![CDATA[reveal-monitor]]></Parameter>
           	<Parameter name="Key"><![CDATA[AIzaSyBFxz6CdD8ensfTk2VsW_7QdgGiYb2j3Ts]]></Parameter>
           	<Parameter name="maxResults"><![CDATA[1000]]></Parameter>
-            <Parameter name="maxRequests"><![CDATA[150]]></Parameter>	
+            	<Parameter name="maxRequests"><![CDATA[450]]></Parameter>	
          	<Parameter name="timeWindow"><![CDATA[15]]></Parameter>	
   		</Stream> 
                
@@ -64,8 +64,8 @@
          	</Parameter>
         	<Parameter name="Key"><![CDATA[afd103a2f78dac004df93fb181edb23c]]></Parameter>
            	<Parameter name="Secret"><![CDATA[b0bffc653b27a6a8]]></Parameter>
-        	<Parameter name="maxRequests"><![CDATA[150]]></Parameter>
-         	<Parameter name="timeWindow"><![CDATA[15]]></Parameter>	        
+        	<Parameter name="maxRequests"><![CDATA[3000]]></Parameter>
+         	<Parameter name="timeWindow"><![CDATA[60]]></Parameter>	        
        	</Stream>
    		
       	<!-- Google+ Stream Handler -->
@@ -76,8 +76,8 @@
          	<Parameter name="Key"><![CDATA[AIzaSyBFxz6CdD8ensfTk2VsW_7QdgGiYb2j3Ts]]></Parameter>
           	<Parameter name="Secret"><![CDATA[]]></Parameter>
            	<Parameter name="ClientId"><![CDATA[]]></Parameter>
-           	<Parameter name="maxRequests"><![CDATA[150]]></Parameter>
-         	<Parameter name="timeWindow"><![CDATA[15]]></Parameter>	
+           	<Parameter name="maxRequests"><![CDATA[400]]></Parameter>
+         	<Parameter name="timeWindow"><![CDATA[60]]></Parameter>	
     	</Stream>
       
       	<!-- Instagram Stream Handler -->
@@ -88,8 +88,8 @@
         	<Parameter name="Key"><![CDATA[5bc7be32dbaa46ceaf98fc93f03fcfce]]></Parameter>
        		<Parameter name="Secret"><![CDATA[e53597da6d7749d2a944651bbe6e6f2a]]></Parameter>
           	<Parameter name="AccessToken"><![CDATA[342704836.5b9e1e6.503a35185da54224adaa76161a573e71]]></Parameter>
-            <Parameter name="maxRequests"><![CDATA[150]]></Parameter>
-        	<Parameter name="timeWindow"><![CDATA[15]]></Parameter>	        
+            <Parameter name="maxRequests"><![CDATA[500]]></Parameter>
+        	<Parameter name="timeWindow"><![CDATA[60]]></Parameter>	         
   		</Stream> 
 
     </Streams>
