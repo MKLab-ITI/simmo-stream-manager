@@ -4,6 +4,8 @@
     	<Input id="feeds">
        		<Parameter name="host"><![CDATA[social1.atc.gr]]></Parameter>
          	<Parameter name="database"><![CDATA[defeeds]]></Parameter>
+         	<Parameter name="username"><![CDATA[]]></Parameter>
+         	<Parameter name="password"><![CDATA[]]></Parameter>
       	</Input>
    	</Inputs>
    	
@@ -12,6 +14,9 @@
       	<Storage id="Mongodb">
         	<Parameter name="Classpath"><![CDATA[gr.iti.mklab.sm.storages.MongoDBSplitStorage]]></Parameter>
          	<Parameter name="mongodb.host"><![CDATA[social1.atc.gr]]></Parameter>
+         	
+         	<Parameter name="mongodb.username"><![CDATA[]]></Parameter>
+         	<Parameter name="mongodb.password"><![CDATA[]]></Parameter>
       	</Storage>
   	</Storages>
    
