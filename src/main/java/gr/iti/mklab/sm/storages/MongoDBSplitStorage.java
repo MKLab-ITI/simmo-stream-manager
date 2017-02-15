@@ -22,15 +22,23 @@ import java.util.concurrent.ExecutionException;
 public class MongoDBSplitStorage implements Storage {
 
     private static String HOST = "mongodb.host";
-
+    private static String USERNAME = "mongodb.username";
+    private static String PASSWORD = "mongodb.password";
+    
     private Logger logger = Logger.getLogger(MongoDBSplitStorage.class);
 
     private String storageName = "Mongodb";
 
     private String host;
 
+    private String username = null;
+    private String password = null;
+    
     public MongoDBSplitStorage(Configuration config) {
         this.host = config.getParameter(HOST);
+        
+        this.username = config.getParameter(USERNAME);
+        this.password = config.getParameter(PASSWORD);
     }
 
     @Override
@@ -48,8 +56,12 @@ public class MongoDBSplitStorage implements Storage {
     public boolean open() {
         logger.info("Open MongoDB storage <host: " + host + ">");
         try {
-            MorphiaManager.setup(host);
-
+        	if(username != null && !username.equals("") && password != null && !password.equals("")) {
+        		MorphiaManager.setup(host, username, password);
+        	}
+        	else {
+        		MorphiaManager.setup(host);
+        	}
         } catch (Exception e) {
             logger.error("MongoDB Storage failed to open!");
             return false;

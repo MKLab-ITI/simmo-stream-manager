@@ -24,7 +24,9 @@ public class MongoDbStorage implements Storage {
 
     private static String HOST = "mongodb.host";
     private static String DB = "mongodb.database";
-
+    private static String USERNAME = "mongodb.username";
+    private static String PASSWORD = "mongodb.password";
+    
     private Logger logger = Logger.getLogger(MongoDbStorage.class);
 
     private String storageName = "Mongodb";
@@ -32,11 +34,18 @@ public class MongoDbStorage implements Storage {
     private String host;
     private String database;
 
+    private String username = null;
+    private String password = null;
+
     private DAOManager dao = null;
 
     public MongoDbStorage(Configuration config) {
         this.host = config.getParameter(MongoDbStorage.HOST);
         this.database = config.getParameter(MongoDbStorage.DB);
+        
+        this.username = config.getParameter(MongoDbStorage.USERNAME);
+        this.password = config.getParameter(MongoDbStorage.PASSWORD);
+        
     }
 
     @Override
@@ -55,8 +64,13 @@ public class MongoDbStorage implements Storage {
         logger.info("Open MongoDB storage <host: " + host + ">");
         if (database != null) {
             try {
-                MorphiaManager.setup(host);
-
+            	if(username != null && !username.equals("") && password != null && !password.equals("")) {
+            		MorphiaManager.setup(host, username, password);
+            	}
+            	else {
+            		MorphiaManager.setup(host);
+            	}
+                
                 dao = new DAOManager(database);
             } catch (Exception e) {
                 logger.error("MongoDB Storage failed to open!");

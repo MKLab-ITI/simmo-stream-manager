@@ -1,5 +1,6 @@
 package gr.iti.mklab.sm.input;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +16,10 @@ import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.QueryResults;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 
 
 /**
@@ -28,12 +33,17 @@ public class FeedsCreator {
 
     protected static final String HOST = "host";
     protected static final String DB = "database";
-
+    protected static final String USERNAME = "username";
+    protected static final String PASSWORD = "password";
+    
     Morphia morphia = new Morphia();
 
     private String host = null;
     private String db = null;
 
+    private String username = null;
+    private String password = null;
+    
     private BasicDAO<Feed, String> feedsDao;
 
     public FeedsCreator(Configuration config) throws Exception {
@@ -41,8 +51,24 @@ public class FeedsCreator {
 
         this.host = config.getParameter(HOST);
         this.db = config.getParameter(DB);
-
-        MongoClient mongoClient = new MongoClient(host);
+        
+        this.username = config.getParameter(USERNAME);
+        this.password = config.getParameter(PASSWORD);
+       
+        MongoClient mongoClient;
+        if(username != null && !username.equals("") && password != null && !password.equals("")) {
+            MongoClientOptions options = MongoClientOptions.builder().build();
+        	ServerAddress srvAdr = new ServerAddress(host != null ? host : "localhost" , 27017);
+        	MongoCredential credential = MongoCredential.createScramSha1Credential(username, "admin", password.toCharArray());
+        	
+        	mongoClient = new MongoClient(srvAdr, Arrays.asList(credential), options);
+        }
+        else {
+        	mongoClient = new MongoClient(host);
+        }
+        
+        
+        
         feedsDao = new BasicDAO<>(Feed.class, mongoClient, morphia, db);
         // ensure capped collections
         feedsDao.getDatastore().ensureCaps();
