@@ -2,7 +2,7 @@
 <Configuration>
 	<Inputs>
     	<Input id="feeds">
-       		<Parameter name="host"><![CDATA[127.0.0.1]]></Parameter>
+       		<Parameter name="host"><![CDATA[social1.atc.gr]]></Parameter>
          	<Parameter name="database"><![CDATA[defeeds]]></Parameter>
          	<Parameter name="username"><![CDATA[]]></Parameter>
          	<Parameter name="password"><![CDATA[]]></Parameter>
@@ -13,7 +13,7 @@
     	<!-- Mongodb storage configuration -->
       	<Storage id="Mongodb">
         	<Parameter name="Classpath"><![CDATA[gr.iti.mklab.sm.storages.MongoDBSplitStorage]]></Parameter>
-         	<Parameter name="mongodb.host"><![CDATA[127.0.0.1]]></Parameter>
+         	<Parameter name="mongodb.host"><![CDATA[social1.atc.gr]]></Parameter>
          	
          	<Parameter name="mongodb.username"><![CDATA[]]></Parameter>
          	<Parameter name="mongodb.password"><![CDATA[]]></Parameter>

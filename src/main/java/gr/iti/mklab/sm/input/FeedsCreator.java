@@ -54,7 +54,7 @@ public class FeedsCreator {
         
         this.username = config.getParameter(USERNAME);
         this.password = config.getParameter(PASSWORD);
-       
+
         MongoClient mongoClient;
         if(username != null && !username.equals("") && password != null && !password.equals("")) {
             MongoClientOptions options = MongoClientOptions.builder().build();
@@ -66,9 +66,9 @@ public class FeedsCreator {
         else {
         	mongoClient = new MongoClient(host);
         }
+
         
-        
-        
+
         feedsDao = new BasicDAO<>(Feed.class, mongoClient, morphia, db);
         // ensure capped collections
         feedsDao.getDatastore().ensureCaps();
